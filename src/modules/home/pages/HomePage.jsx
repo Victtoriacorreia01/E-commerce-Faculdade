@@ -1,40 +1,49 @@
-import React from 'react';
-import { Container, Grid, Box, Typography} from '@mui/material';
-import Section from '../components/Section';
+// src/modules/home/pages/HomePage.jsx
 
-const MainPage: React.FC = () => {
-    return (
-        <Container>
-            <Box sx={{ padding: '40px', textAlign: 'center' }}>
-                <Typography variant="h3" gutterBottom>
-                    Bem-vindo ao Gestão Ao Vivo
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                    Conectando proprietários e construtoras para obras e reformas de todos os tamanhos.
-                </Typography>
-                <Grid container spacing={4} sx={{ marginTop: '20px' }}>
-                    <Grid item xs={12} sm={6}>
-                        <Section 
-                            title="Área do Proprietário"
-                            description="Como proprietário, você pode gerenciar suas obras e reformas com facilidade. Acesse todas as ferramentas necessárias para monitorar o progresso, fazer ajustes e garantir que seus projetos sejam concluídos com sucesso."
-                            buttonText="Acessar como Proprietário"
-                            buttonHref="/owner"
-                            backgroundColor="#f0f0f0"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Section 
-                            title="Área da Construtora"
-                            description="Se você é uma construtora, aqui é onde você pode explorar oportunidades de projetos, fazer o gerenciamento das suas obras e colaborar com proprietários para entregar trabalhos de qualidade."
-                            buttonText="Acessar como Construtora"
-                            buttonHref="/company"
-                            backgroundColor="#e0e0e0"
-                        />
-                    </Grid>
-                </Grid>
-            </Box>
-        </Container>
-    );
+import React from 'react';
+import styled from 'styled-components';
+
+
+const Container = styled.div`
+  text-align: center;
+  padding: 20px;
+  background-color: ${({ theme }) => theme.colors.background};
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const Title = styled.h1`
+  font-size: 2.5rem;
+  color: ${({ theme }) => theme.colors.primary};
+`;
+
+const Description = styled.p`
+  font-size: 1.2rem;
+  margin: 20px 0;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  background-color: ${({ theme }) => theme.colors.accent};
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const Home = () => {
+  return (
+    <Container>
+      <Title>Bem-vindo à Nossa Página</Title>
+      <Description>
+        Aqui você pode encontrar uma variedade de produtos e serviços. Navegue e descubra o que temos a oferecer!
+      </Description>
+      <Button>Começar</Button>
+    </Container>
+  );
 };
 
-export default MainPage;
+export default Home;

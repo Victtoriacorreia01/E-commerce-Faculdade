@@ -1,18 +1,16 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
-import RouteWrapper from '../../../routes/RouteWrapper';
-import DetailPage from '../pages/DetailPage';
-import InitialPage from '../pages/InitialPage';
+import { Route, Routes } from 'react-router-dom'; 
+import InitialPage from '../pages/InitialPage'; // Ajuste o caminho conforme necessário
+import DetailPage from '../pages/DetailPage';   // Ajuste o caminho conforme necessário
 
-const FemRoutes: React.FC = () => {
-    return (
-        <><RouteWrapper>
-            <Route path="detail" element={<DetailPage />} />
-            <Route path="initial" element={<InitialPage />} />
-        </RouteWrapper>
-        <RouteWrapper isProtected={true} requiresPermission={true}>
-        </RouteWrapper></>
-    );
+const FemRoutes = () => {
+  return (
+    <Routes>
+      {/* Rotas públicas sem proteção */}
+      <Route path="/initial" element={<InitialPage />} />
+      <Route path="/detail" element={<DetailPage />} />
+    </Routes>
+  );
 };
 
 export default FemRoutes;

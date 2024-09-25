@@ -1,14 +1,9 @@
-import { ReactNode } from 'react';
+/*import React from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import NoPermissionPage from '../Shared/Pages/NoPermissionPage'; // Página de "Sem Permissão"
 
-interface RouteWrapperProps {
-  children: ReactNode;
-  isProtected?: boolean; // Define se a rota requer autenticação
-  requiresPermission?: boolean; // Define se a rota requer permissão
-}
-
-const RouteWrapper = ({ children, isProtected = false, requiresPermission = false }: RouteWrapperProps) => {
+// Componente RouteWrapper que gerencia a lógica de autenticação e permissões
+const RouteWrapper = ({ children, isProtected = false, requiresPermission = false }) => {
   const location = useLocation();
 
   // Verificar autenticação e permissões
@@ -22,11 +17,11 @@ const RouteWrapper = ({ children, isProtected = false, requiresPermission = fals
 
   // Caso a rota exija permissão e o usuário não a tenha
   if (requiresPermission && permission !== '1') {
-    return <NoPermissionPage />; // Redireciona para uma página de "Sem Permissão"
+    return <NoPermissionPage />; // Exibe a página de "Sem Permissão"
   }
 
-  // Renderizar as rotas permitidas
+  // Renderiza as rotas permitidas
   return <>{children}</>;
 };
 
-export default RouteWrapper;
+export default RouteWrapper;*/
