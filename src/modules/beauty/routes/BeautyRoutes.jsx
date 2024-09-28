@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-//import BeautyPage from '../pages/BeautyPage';
+import BeautyPage from '../pages/BeautyPage';
 
 const BeautyRoutes = () => (
   <Routes>

@@ -4,7 +4,7 @@ import SportPage from '../pages/SportPage'; // Importe a página de esporte
 
 const SportRoutes = () => (
   <Routes>
-    <Route path="/" element={<SportPage />} />
+    <Route path="/sport" element={<SportPage />} />
     {/* Adicione outras rotas filhas aqui, se necessário */}
   </Routes>
 );

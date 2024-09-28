@@ -1,11 +1,12 @@
 import React from 'react';
 import fotoprincipal from '../../../assets/baixados (55).jpg'; 
 import '../../../tailwind.css'; 
+import '../styles/home.css'
 
 const saleItems = [
-  { id: 1, link: '', img: '../../../../src/assets/meninonegro.jpg', subtitle: 'man', title: 'sale 40% off' },
+  { id: 1, link: '', img: '../../../../src/assets/meninonegro.jpg', subtitle: 'men', title: 'sale 40% off' },
   { id: 2, link: '', img: '../../../../src/assets/mulhersport.jpg', subtitle: 'sport', title: 'sale 25% off' },
-  { id: 3, link: '', img: '../../../../src/assets/homembranco.jpg', subtitle: 'man', title: 'sale 20% off' },
+  { id: 3, link: '', img: '../../../../src/assets/homembranco.jpg', subtitle: 'men', title: 'sale 20% off' },
 ];
 
 const mustHaveItems = [
@@ -52,7 +53,7 @@ export default function Home() {
             </button>
           </div>
           <div className="w-full md:w-1/2 mt-8 md:mt-0 animate__animated animate__fadeInRight">
-            <img src={fotoprincipal} alt="Spring Sale" className="rounded-lg animate__animated animate__zoomIn animate__delay-3s" />
+            <img src={fotoprincipal} alt="Spring Sale" className="imgprinc rounded-lg animate__animated animate__zoomIn animate__delay-3s" />
           </div>
         </div>
       </header>
