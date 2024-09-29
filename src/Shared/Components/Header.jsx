@@ -100,7 +100,7 @@ export default function Header() {
                 <Link to="/shop/favoritos">
                   <FaHeart className={styles.iconWhite} />
                 </Link>
-                <Link to="/cart">
+                <Link to="/cart/cart">
                   <FaShoppingCart className={styles.iconWhite} />
                 </Link>
               </div>

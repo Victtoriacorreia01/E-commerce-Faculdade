@@ -1,10 +1,10 @@
 import React from 'react';
+import Cart from '../components/Cart'; // Importe o CartPage aqui
 
 const CartPage = () => {
   return (
     <div>
-      <h1>Your Shopping Cart</h1>
-      {/* Adicione conteúdo do carrinho aqui */}
+      <Cart /> 
     </div>
   );
 };
