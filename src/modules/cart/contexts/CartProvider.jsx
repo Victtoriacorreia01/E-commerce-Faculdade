@@ -1,70 +1,40 @@
-import React, { createContext, useState, useContext } from 'react';
+// CartProvider.jsx
+import React, { createContext, useContext, useState } from 'react';
 
-// Criar o contexto
-export const CartContext = createContext();
+const CartContext = createContext();
 
-// Provedor do contexto
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState([]);
 
-  // Adicionar produto ao carrinho
-  const addProductIntoCart = (product) => {
-    setCart((prevCart) => {
-      const existingProductIndex = prevCart.findIndex((item) => item.id === product.id);
+    const addProductIntoCart = (product) => {
+        // Lógica para adicionar produto no carrinho
+    };
 
-      if (existingProductIndex > -1) {
-        // Atualizar quantidade se o produto já estiver no carrinho
-        const updatedCart = [...prevCart];
-        updatedCart[existingProductIndex].quantidade += product.quantidade;
-        return updatedCart;
-      } else {
-        // Adicionar novo produto ao carrinho
-        return [...prevCart, { ...product, quantidade: product.quantidade || 1 }];
-      }
-    });
-  };
+    const removeProductFromCart = (id) => {
+        // Lógica para remover produto do carrinho
+    };
 
-  // Remover produto do carrinho
-  const removeProductFromCart = (id) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-  };
+    const productCartIncrement = (id) => {
+        // Lógica para incrementar quantidade do produto
+    };
 
-  // Incrementar quantidade do produto
-  const productCartIncrement = (id) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, quantidade: (item.quantidade || 0) + 1 } : item
-      )
+    const productCartDecrement = (id) => {
+        // Lógica para decrementar quantidade do produto
+    };
+
+    return (
+        <CartContext.Provider value={{
+            cart,
+            addProductIntoCart,
+            removeProductFromCart,
+            productCartIncrement,
+            productCartDecrement,
+        }}>
+            {children}
+        </CartContext.Provider>
     );
-  };
-
-  // Decrementar quantidade do produto
-  const productCartDecrement = (id) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id && item.quantidade > 1
-          ? { ...item, quantidade: (item.quantidade || 0) - 1 }
-          : item
-      )
-    );
-  };
-
-  return (
-    <CartContext.Provider
-      value={{
-        cart,
-        addProductIntoCart,
-        removeProductFromCart,
-        productCartIncrement,
-        productCartDecrement,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  );
 };
 
-// Hook para usar o contexto
 export const useCart = () => {
-  return useContext(CartContext);
+    return useContext(CartContext);
 };

@@ -72,7 +72,7 @@ export default function Header() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/beauty/beauty" className={styles.navbarLink}>
+                  <Link to="/beauty/page" className={styles.navbarLink}>
                     Beleza
                     <i className={`${styles.icon} ${styles.ml1}`}></i>
                   </Link>

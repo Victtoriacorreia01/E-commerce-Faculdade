@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useCart } from '../contexts/CartProvider'; // Ajuste o caminho conforme necessário
-import styles from '../styles/Cart.module.css';
 
-import pag1 from '../../../../src/assets/mastercard.jpg';
-import pag2 from '../../../../src/assets/nubank.jpg';
-import pag3 from '../../../../src/assets/pix.jpg';
-import pag4 from '../../../../src/assets/hipercard.jpg';
-import pag5 from '../../../../src/assets/caixa.jpg';
-import pag6 from '../../../../src/assets/paypal.jpg';
+import React, { useEffect, useState } from 'react';
+import useCart from '../../../hooks/use-cart'; 
+import styles from '../styles/Cart.module.css'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'; 
 
 const Cart = () => {
   const { cart, removeProductFromCart, productCartIncrement, productCartDecrement } = useCart();
@@ -45,114 +41,47 @@ const Cart = () => {
     productCartDecrement(id);
   };
 
-  const handleCheckout = () => {
-    // Implemente a navegação para a página de pagamento
-    console.log(`Redirecionando para pagamento com total: R$ ${total}`);
+  const handleClearCart = () => {
+    cart.forEach(item => handleRemoveItem(item.id));
   };
 
   return (
     <div className={styles.cartContainer}>
-      <div className={styles.cartItems}>
-        <h2 className={styles.cartTitle}>Todos os itens ({cart.length})</h2>
-        {cart.map((item) => (
-          <div className={styles.cartItem} key={item.id}>
-            <div className={styles.cartItemImage}>
-
-              <img src={item.imagem} alt={item.nome} width={80} height={80} />
-            </div>
-            <div className={styles.cartItemInfo}>
-              <p className={styles.cartItemName}>{item.nome}</p>
-              <p className={styles.cartItemPrice}>Preço: R$ {parseFloat(item.preco).toFixed(2)}</p>
-              <div className={styles.cartItemActions}>
-                <button
-                  className={styles.cartActionButton}
-                  onClick={() => handleDecreaseQuantity(item.id)}
-                  disabled={item.quantidade <= 1}
-                >
-                  -
-                </button>
-                <span className={styles.cartItemQuantity}>{item.quantidade}</span>
-                <button
-                  className={styles.cartActionButton}
-                  onClick={() => handleIncreaseQuantity(item.id)}
-                >
-                  +
-                </button>
-              </div>
-              <button
-                className={styles.removeButton}
-                onClick={() => handleRemoveItem(item.id)}
-              >
-                Remover
-              </button>
+      <h1 className={styles.title}>Meu Carrinho</h1>
+      {cart.length === 0 ? (
+        <p>Seu carrinho está vazio.</p>
+      ) : (
+        <>
+          <ul>
+            {cart.map((item) => (
+              <li key={item.id} className={styles.cartItem}>
+                <img src={item.imagem} alt={item.nome} width={150} height={150} className={styles.imgproduct} />
+                <div>
+                  <h2>{item.nome}</h2>
+                  <p>Preço: R$ {parseFloat(item.preco).toFixed(2)}</p>
+                  <div className={styles.cartItemActions}>
+                    <div className={styles.cartQuantityContainer}>
+                      <button className={styles.quantityButton} onClick={() => handleDecreaseQuantity(item.id)} disabled={item.quantidade <= 1}>-</button>
+                      <span className={styles.cartQuantity}>{item.quantidade}</span>
+                      <button className={styles.quantityButton} onClick={() => handleIncreaseQuantity(item.id)}>+</button>
+                    </div>
+                    <button className={styles.removeButton} onClick={() => handleRemoveItem(item.id)}>
+                      <FontAwesomeIcon icon={faTrashAlt} className={styles.trashIcon} />
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className={styles.orderSummary}>
+            <h2>Total: R$ {total}</h2>
+            <div className={styles.buttonContainer}>
+              <button className={styles.emptyCartButton} onClick={handleClearCart}>Esvaziar Carrinho</button>
+              <button className={styles.orderButton} onClick={() => alert('Realizar checkout!')}>Compre Agora</button>
             </div>
           </div>
-        ))}
-      </div>
-      <div className={styles.orderSummary}>
-        <h2 className={styles.orderSummaryTitle}>Resumo do Pedido</h2>
-        <p className={styles.orderSummaryTotal}>Total: R$ {total}</p>
-        <button className={styles.orderButton} onClick={handleCheckout}>
-          Compre Agora
-        </button>
-      </div>
-      <div className={styles.paymentMethods}>
-        <h2 className={styles.paymentMethodsTitle}>Formas de Pagamento</h2>
-        <div className={styles.paymentMethod}>
-          <div className={styles.paymentMethodImage}>
-            <img src={pag1} alt="MasterCard" width={80} height={50} />
-          </div>
-          <div>
-            <p className={styles.paymentMethodName}>MasterCard</p>
-            <p className={styles.paymentMethodDescription}>Cartão de crédito MasterCard</p>
-          </div>
-        </div>
-        <div className={styles.paymentMethod}>
-          <div className={styles.paymentMethodImage}>
-            <img src={pag2} alt="Nubank" width={80} height={50} />
-          </div>
-          <div>
-            <p className={styles.paymentMethodName}>Nubank</p>
-            <p className={styles.paymentMethodDescription}>Cartão de crédito Nubank</p>
-          </div>
-        </div>
-        <div className={styles.paymentMethod}>
-          <div className={styles.paymentMethodImage}>
-            <img src={pag3} alt="Pix" width={50} height={50} />
-          </div>
-          <div>
-            <p className={styles.paymentMethodName}>Pix</p>
-            <p className={styles.paymentMethodDescription}>Pagamento instantâneo via Pix</p>
-          </div>
-        </div>
-        <div className={styles.paymentMethod}>
-          <div className={styles.paymentMethodImage}>
-            <img src={pag4} alt="Hipercard" width={80} height={50} />
-          </div>
-          <div>
-            <p className={styles.paymentMethodName}>Hipercard</p>
-            <p className={styles.paymentMethodDescription}>Cartão de crédito Hipercard</p>
-          </div>
-        </div>
-        <div className={styles.paymentMethod}>
-          <div className={styles.paymentMethodImage}>
-            <img src={pag5} alt="Caixa" width={80} height={50} />
-          </div>
-          <div>
-            <p className={styles.paymentMethodName}>Caixa</p>
-            <p className={styles.paymentMethodDescription}>Cartão de crédito Caixa</p>
-          </div>
-        </div>
-        <div className={styles.paymentMethod}>
-          <div className={styles.paymentMethodImage}>
-            <img src={pag6} alt="PayPal" width={80} height={50} />
-          </div>
-          <div>
-            <p className={styles.paymentMethodName}>PayPal</p>
-            <p className={styles.paymentMethodDescription}>Pagamento via PayPal</p>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };

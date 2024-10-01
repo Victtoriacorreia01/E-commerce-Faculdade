@@ -4,7 +4,7 @@ import BeautyPage from '../pages/BeautyPage';
 
 const BeautyRoutes = () => (
   <Routes>
-    <Route path="/Beauty" element={<BeautyPage />} />
+    <Route path="/page" element={<BeautyPage />} />
     {/* Adicione outras rotas filhas aqui, se necessário */}
   </Routes>
 );

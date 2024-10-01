@@ -1,10 +1,10 @@
 import React from 'react';
+import Beauty from '../components/Beauty'; 
 
 const BeautyPage = () => {
   return (
     <div>
-      <h1>Beauty</h1>
-      <p>.</p>
+      <Beauty />
     </div>
   );
 };
