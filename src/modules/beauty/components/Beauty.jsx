@@ -1,7 +1,7 @@
 'use client';
 
 import '@fortawesome/fontawesome-free/css/all.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useCart from '../../../hooks/use-cart';
 import rimel from '../../../assets/rimel.jpg';
 import blush from '../../../assets/blush.jpg';
@@ -19,6 +19,7 @@ const Beauty = () => {
   const [maxPrice, setMaxPrice] = useState(1000);
   const [sortOption, setSortOption] = useState('relevancy');
 
+  // Produtos
   const produtos = [
     { id: 19, nome: "Blush", preco: 79.99, info: "O mais vendido", imagem: blush, categoria: "beleza" },
     { id: 20, nome: "Batom", preco: 39.99, imagem: batom, categoria: "beleza" },
@@ -31,29 +32,40 @@ const Beauty = () => {
     { id: 27, nome: "Hidratante labial", preco: 29.99, imagem: hidratantelabial, categoria: "beleza" },
   ];
 
+  // Função para alternar favoritos e salvar no localStorage
   const toggleFavorite = (produtoId) => {
-    setFavorites((prevFavorites) =>
-      prevFavorites.includes(produtoId)
+    setFavorites((prevFavorites) => {
+      const updatedFavorites = prevFavorites.includes(produtoId)
         ? prevFavorites.filter((id) => id !== produtoId)
-        : [...prevFavorites, produtoId]
-    );
+        : [...prevFavorites, produtoId];
+      
+      localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      return updatedFavorites;
+    });
   };
 
+  // Carregar favoritos do localStorage quando o componente montar
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    setFavorites(storedFavorites);
+  }, []);
+
+  // Ordenar produtos de acordo com a opção selecionada
   const sortedProducts = [...produtos].sort((a, b) => {
-    if (sortOption === 'price_asc') {
-      return a.preco - b.preco;
-    } else if (sortOption === 'price_desc') {
-      return b.preco - a.preco;
-    }
+    if (sortOption === 'price_asc') return a.preco - b.preco;
+    if (sortOption === 'price_desc') return b.preco - a.preco;
     return 0; 
   });
 
+  // Filtrar produtos por preço máximo
   const filteredProducts = sortedProducts.filter((produto) => produto.preco <= maxPrice);
 
+  // Manipulador de mudança de ordenação
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
   };
 
+  // Renderizar estrelas de avaliação
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -67,6 +79,7 @@ const Beauty = () => {
   return (
     <div className="container mx-auto mt-20 mb-10">
       <div className="grid grid-cols-4 gap-4">
+        {/* Filtros e opções de ordenação */}
         <div className="col-span-1 bg-white p-4 shadow-lg rounded-lg">
           <h1 className="text-lg font-bold mb-2">Ordenar Por</h1>
           <select
@@ -94,39 +107,45 @@ const Beauty = () => {
             <p className="text-gray-600 mt-1">Até R$ {maxPrice}</p>
           </div>
         </div>
+
+        {/* Exibição de produtos */}
         <div className="col-span-3 grid grid-cols-1 md:grid-cols-4 gap-4">
-          {filteredProducts.map((produto) => (
-            <div key={produto.id} className="bg-white p-2 shadow-md rounded-lg">
-              <div className="w-full h-40 relative overflow-hidden">
-                <img
-                  src={produto.imagem}
-                  alt={produto.nome}
-                  className="rounded-lg w-full h-full object-contain"
-                />
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((produto) => (
+              <div key={produto.id} className="bg-white p-2 shadow-md rounded-lg">
+                <div className="w-full h-40 relative overflow-hidden">
+                  <img
+                    src={produto.imagem}
+                    alt={produto.nome}
+                    className="rounded-lg w-full h-full object-contain"
+                  />
+                </div>
+                <a href={`/produtos/${produto.id}`}>
+                  <span className="text-lg font-semibold mt-2 block cursor-pointer">{produto.nome}</span>
+                </a>
+                <p className="text-gray-600">Preço: R$ {produto.preco.toFixed(2)}</p>
+                <div className="flex items-center mt-2">
+                  <button
+                    className={`ml-3 mr-3 ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500 hover:text-red-800'}`}
+                    onClick={() => toggleFavorite(produto.id)}
+                  >
+                    <i className="fas fa-heart"></i>
+                  </button>
+                  <button
+                    className="text-green-500 hover:text-green-700"
+                    onClick={() => addProductIntoCart(produto)}
+                  >
+                    <i className="fas fa-cart-plus"></i>
+                  </button>
+                </div>
+                <div className="flex items-center mt-2">
+                  {renderStars(4)}
+                </div>
               </div>
-              <a href={`/produtos/${produto.id}`}>
-                <span className="text-lg font-semibold mt-2 block cursor-pointer">{produto.nome}</span>
-              </a>
-              <p className="text-gray-600">Preço: R$ {produto.preco.toFixed(2)}</p>
-              <div className="flex items-center mt-2">
-                <button
-                  className={`ml-3 mr-3 ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500 hover:text-red-800'}`}
-                  onClick={() => toggleFavorite(produto.id)}
-                >
-                  <i className="fas fa-heart"></i>
-                </button>
-                <button
-                  className="text-green-500 hover:text-green-700"
-                  onClick={() => addProductIntoCart(produto)} // Adicionando o produto ao carrinho
-                >
-                  <i className="fas fa-cart-plus"></i>
-                </button>
-              </div>
-              <div className="flex items-center mt-2">
-                {renderStars(4)}
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-gray-600">Nenhum produto encontrado dentro do limite de preço.</p>
+          )}
         </div>
       </div>
     </div>

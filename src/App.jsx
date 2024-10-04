@@ -1,4 +1,4 @@
-import { CartProvider } from '../src/hooks/use-cart'; // Ajuste o caminho conforme sua estrutura
+import { CartProvider } from '../src/hooks/use-cart'; 
 import { BrowserRouter as Router } from 'react-router-dom';
 import AppRoutes from '../src/routes/AppRoutes'; 
 import GlobalStyles from '../src/Shared/Styles/GlobalStyles'; 
@@ -9,7 +9,7 @@ import { theme } from './Themes/GlobalTheme';
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    <CartProvider> {/* Certifique-se de que o CartProvider está sendo usado */}
+    <CartProvider> 
       <Router>
         <GlobalStyles /> 
         <main>

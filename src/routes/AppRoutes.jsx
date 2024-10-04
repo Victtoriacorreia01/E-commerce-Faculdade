@@ -7,7 +7,8 @@ import SportRoutes from '../modules/sport/routes/SportRoutes';
 import BeautyRoutes from '../modules/beauty/routes/BeautyRoutes';
 import RegisterRoutes from '../modules/register/routes/RegisterRoutes';
 import CartRoutes from '../modules/cart/routes/CartRoutes';
-import ContactRoutes from '../modules/contact/routes/ContactRoutes'; 
+import ContactRoutes from '../modules/contact/routes/ContactRoutes';
+import FavoritesRoutes from '../modules/favorites/routes/FavoritesRoutes';  
 
 const AppRoutes = () => (
   <Routes>
@@ -22,6 +23,7 @@ const AppRoutes = () => (
     <Route path="/register/*" element={<RegisterRoutes />} />
     <Route path="/cart/*" element={<CartRoutes />} />
     <Route path="/contact/*" element={<ContactRoutes />} />
+    <Route path="/favorite/*" element={<FavoritesRoutes />} />
   </Routes>
 );
 

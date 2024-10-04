@@ -1,19 +1,27 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaShoppingCart, FaHeart, FaUserPlus } from 'react-icons/fa';
 import Logo from '../../../src/assets/logo2.png';
 import styles from '../../Shared/Styles/Header.module.css';
-import { Link, useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Header() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [cartItemsCount, setCartItemsCount] = useState(0);
 
+  // Função para lidar com a busca
   const handleSearch = (e) => {
     e.preventDefault();
     const searchURL = `/search?query=${encodeURIComponent(searchQuery)}`;
-    navigate(searchURL); 
+    navigate(searchURL);
   };
+
+  // Simulação de recuperação dos itens no carrinho ao carregar a página
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    setCartItemsCount(storedCart.length);
+  }, []);
 
   return (
     <header>
@@ -23,7 +31,7 @@ export default function Header() {
             <div className={styles.flexItemsCenter}>
               <ul className={`${styles.flex} ${styles.spaceX4}`}>
                 <li>
-                  <Link to="/shop/Login" className={styles.navLink}>
+                  <Link to="login/login" className={styles.navLink}>
                     Login
                   </Link>
                 </li>
@@ -94,21 +102,22 @@ export default function Header() {
                 </button>
               </form>
               <div className={`${styles.flex} ${styles.spaceX4} ${styles.divnav}`}>
-                <Link to="/shop/cadastro">
+                <Link to="register/register">
                   <FaUserPlus className={styles.iconWhite} />
                 </Link>
-                <Link to="/shop/favoritos">
+                <Link to="favorite/favorite">
                   <FaHeart className={styles.iconWhite} />
                 </Link>
-                <Link to="/cart/cart">
+                <Link to="/cart/cart" className={styles.cartIconContainer}>
                   <FaShoppingCart className={styles.iconWhite} />
+                  {cartItemsCount > 0 && (
+                    <span className={styles.cartItemCount}>{cartItemsCount}</span>
+                  )}
                 </Link>
               </div>
             </nav>
             <div className={styles.freeShipping}>
-              <p className={styles.freeShippingText}>
-                Free Shipping on Orders Over $200
-              </p>
+              <p className={styles.freeShippingText}>Frete grátis em todos os produtos!!</p>
             </div>
           </div>
         </div>

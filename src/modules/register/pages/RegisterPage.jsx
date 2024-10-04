@@ -1,10 +1,10 @@
 import React from 'react';
+import RegisterPrinc from '../components/RegisterPrinc';
 
 const RegisterPage = () => {
   return (
     <div>
-      <h1>Register</h1>
-      {/* Adicione o formulário de registro ou outros conteúdos aqui */}
+      <RegisterPrinc/>
     </div>
   );
 };
