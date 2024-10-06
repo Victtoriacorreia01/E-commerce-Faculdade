@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'; // Importe Routes corretamente
+import { Routes, Route } from 'react-router-dom'; 
 import LoginPage from '../pages/LoginPage';
 
 const LoginRoutes = () => (

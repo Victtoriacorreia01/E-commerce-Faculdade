@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
-
 // Cria uma instância do axios com as configurações padrão
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/', // Usa a variável de ambiente ou um valor padrão

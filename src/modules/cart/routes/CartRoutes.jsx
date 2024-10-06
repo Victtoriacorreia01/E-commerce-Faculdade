@@ -1,11 +1,11 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import CartPage from '../pages/CartPage'; // Importe a página de carrinho
-
+import CartPage from '../pages/CartPage'; 
+import PaymentFirst from '../pages/PaymentFirst';
 const CartRoutes = () => (
   <Routes>
     <Route path="/cart" element={<CartPage />} />
-    {/* Adicione outras rotas filhas aqui, se necessário */}
+    <Route path="/pagamento" element={<PaymentFirst />} />
   </Routes>
 );
 

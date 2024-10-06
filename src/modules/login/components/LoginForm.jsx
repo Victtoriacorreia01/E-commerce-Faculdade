@@ -30,18 +30,20 @@ export default function LoginForm() {
 
     const onSubmit = async (data) => {
         setLoading(true);
-        setError(null); // Reseta o erro a cada nova tentativa
-
+        setError(null); 
+    
         try {
-            const response = await loginUser(data);
-            console.log('Resposta do login:', response);
+            const token = await loginUser(data);
+            console.log('Resposta do login:', token);
             setLoading(false);
             setSuccess(true);
             reset();
+            
+            localStorage.setItem('authToken', token); 
         } catch (error) {
             console.error('Erro ao logar:', error);
             setLoading(false);
-            setError('Falha ao realizar login. Verifique suas credenciais.'); // Mensagem de erro
+            setError('Falha ao realizar login. Verifique suas credenciais.');
         }
     };
 
@@ -138,7 +140,7 @@ export default function LoginForm() {
                         <button
                             type="submit"
                             className="group relative w-2/3 flex justify-center py-1 px-2 border border-transparent text-lg font-medium rounded-full text-white bg-green-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ml-16"
-                            disabled={isSubmitting || loading} // Desabilitar enquanto submetendo
+                            disabled={isSubmitting || loading} 
                         >
                             {isSubmitting || loading ? 'Enviando...' : 'Entrar'}
                         </button>

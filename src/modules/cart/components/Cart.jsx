@@ -1,13 +1,14 @@
-
 import React, { useEffect, useState } from 'react';
 import useCart from '../../../hooks/use-cart'; 
 import styles from '../styles/Cart.module.css'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'; 
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 
 const Cart = () => {
   const { cart, removeProductFromCart, productCartIncrement, productCartDecrement } = useCart();
   const [total, setTotal] = useState(0);
+  const navigate = useNavigate(); // Criar a instância do hook useNavigate
 
   useEffect(() => {
     const calculateTotal = () => {
@@ -45,6 +46,10 @@ const Cart = () => {
     cart.forEach(item => handleRemoveItem(item.id));
   };
 
+  const handleCheckout = () => {
+    navigate('/cart/pagamento'); // Redirecionar para a página de pagamento dentro do contexto do carrinho
+  };
+
   return (
     <div className={styles.cartContainer}>
       <h1 className={styles.title}>Meu Carrinho</h1>
@@ -77,7 +82,7 @@ const Cart = () => {
             <h2>Total: R$ {total}</h2>
             <div className={styles.buttonContainer}>
               <button className={styles.emptyCartButton} onClick={handleClearCart}>Esvaziar Carrinho</button>
-              <button className={styles.orderButton} onClick={() => alert('Realizar checkout!')}>Compre Agora</button>
+              <button className={styles.orderButton} onClick={handleCheckout}>Compre Agora</button>
             </div>
           </div>
         </>
