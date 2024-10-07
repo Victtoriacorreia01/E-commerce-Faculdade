@@ -1,14 +1,14 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
-// Cria uma instância do axios com as configurações padrão
+
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/', // Usa a variável de ambiente ou um valor padrão
-    timeout: 15000, // Tempo limite de 15 segundos
+    baseURL: 'http://localhost:8080/', 
+    timeout: 15000, 
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials: true,
 });
 
-// Funções auxiliares para facilitar as requisições usando a instância configurada do axios
 
 // Função para GET requests
 export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {

@@ -10,7 +10,7 @@ import RegisterRoutes from '../modules/register/routes/RegisterRoutes';
 import CartRoutes from '../modules/cart/routes/CartRoutes';
 import ContactRoutes from '../modules/contact/routes/ContactRoutes';
 import FavoritesRoutes from '../modules/favorites/routes/FavoritesRoutes';
-import RouteWrapper from '../routes/RouteWrapper'; // Certifique-se de que este caminho está correto
+import RouteWrapper from '../routes/RouteWrapper'; 
 
 const AppRoutes = () => (
   <RouteWrapper>
