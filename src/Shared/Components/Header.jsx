@@ -64,7 +64,7 @@ export default function Header() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/fem/detail" className={styles.navbarLink}>
+                  <Link to="/fem/female" className={styles.navbarLink}>
                     Feminino
                   </Link>
                 </li>
