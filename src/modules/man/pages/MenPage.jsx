@@ -1,10 +1,10 @@
 import React from 'react';
+import Man from '../components/Man';
 
 const ManPage = () => {
   return (
     <div>
-      <h1>Men's Products</h1>
-      {/* Adicione conteúdo sobre produtos masculinos aqui */}
+      <Man/>
     </div>
   );
 };

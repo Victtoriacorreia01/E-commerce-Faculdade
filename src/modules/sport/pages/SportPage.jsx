@@ -1,10 +1,10 @@
 import React from 'react';
+import Sport from '../components/Sport'; 
 
 const SportPage = () => {
   return (
     <div>
-      <h1>Sport</h1>
-      
+      <Sport />
     </div>
   );
 };
