@@ -5,7 +5,7 @@ import ProductPage from '../pages/ProductPage';
 const BeautyRoutes = () => (
   <Routes>
     <Route path="/page" element={<BeautyPage />} /> 
-    <Route path="/produtos/:id" element={<ProductPage />} /> 
+    <Route path="/produtos/:id" element={<ProductPage />} />
   </Routes>
 );
 export default BeautyRoutes;

@@ -154,6 +154,7 @@
 }
 
 .iconWhite {
+  margin-top: 8px;
   color: white;
   width: 1.6rem;
   height: 1.8rem;
@@ -175,7 +176,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  top: 125px;
+  top: 140px;
   height: 1.85rem;
   background-color: #48bb78;
   display: flex;

@@ -1,41 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Importando Link
+import { Link } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.css';
 import useCart from '../../../hooks/use-cart';
-import rimel from '../../../assets/rimel.jpg';
-import blush from '../../../assets/blush.jpg';
-import po from '../../../assets/poo.jpg';
-import delineador from '../../../assets/delineadorr.jpg';
-import batom from '../../../assets/batomm.jpg';
-import gloss from '../../../assets/gloss.jpg';
-import hidratantelabial from '../../../assets/hidratantelabial.jpg';
-import aguamicelar from '../../../assets/aguamicelar.jpg';
-import paleta from '../../../assets/paleta.jpg';
+import { getProductsByCategory } from '../services/BeautyService'; 
 
 const Beauty = () => {
   const { addProductIntoCart } = useCart();
   const [favorites, setFavorites] = useState([]);
   const [maxPrice, setMaxPrice] = useState(1000);
   const [sortOption, setSortOption] = useState('relevancy');
-
-  const produtos = [
-    { id: 19, nome: "Blush", preco: 79.99, info: "O mais vendido", imagem: blush, categoria: "beleza" },
-    { id: 20, nome: "Batom", preco: 39.99, imagem: batom, categoria: "beleza" },
-    { id: 21, nome: "Rímel", preco: 89.99, info: "Se sinta linda!", imagem: rimel, categoria: "beleza" },
-    { id: 22, nome: "Paleta", preco: 84.99, imagem: paleta, categoria: "beleza" },
-    { id: 23, nome: "Pó compacto", preco: 109.99, imagem: po, categoria: "beleza" },
-    { id: 24, nome: "Gloss", preco: 36.99, imagem: gloss, categoria: "beleza" },
-    { id: 25, nome: "Delineador", preco: 69.99, imagem: delineador, categoria: "beleza" },
-    { id: 26, nome: "Água micelar", preco: 59.99, imagem: aguamicelar, categoria: "beleza" },
-    { id: 27, nome: "Hidratante labial", preco: 29.99, imagem: hidratantelabial, categoria: "beleza" },
-  ];
+  const [produtos, setProdutos] = useState([]); 
 
   const toggleFavorite = (produtoId) => {
     setFavorites((prevFavorites) => {
       const updatedFavorites = prevFavorites.includes(produtoId)
         ? prevFavorites.filter((id) => id !== produtoId)
         : [...prevFavorites, produtoId];
-      
       localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
       return updatedFavorites;
     });
@@ -46,13 +26,32 @@ const Beauty = () => {
     setFavorites(storedFavorites);
   }, []);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProductsByCategory('beauty'); 
+        setProdutos(data.map(produto => ({
+          id: produto.id,
+          nome: produto.name, 
+          preco: produto.price, 
+          imagem: `http://localhost:8080/images/beauty/${produto.imageUrl.split('/').pop()}` 
+        }))); 
+      } catch (error) {
+        console.error('Erro ao buscar produtos:', error);
+      }
+    };
+
+    fetchProducts(); 
+  }, []);
+
   const sortedProducts = [...produtos].sort((a, b) => {
     if (sortOption === 'price_asc') return a.preco - b.preco;
     if (sortOption === 'price_desc') return b.preco - a.preco;
-    return 0; 
+    return 0;
   });
 
   const filteredProducts = sortedProducts.filter((produto) => produto.preco <= maxPrice);
+
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
   };
@@ -109,8 +108,10 @@ const Beauty = () => {
                     className="rounded-lg w-full h-full object-contain"
                   />
                 </div>
-                <Link to={`/beauty/produtos/${produto.id}`}> 
-                  <span className="text-lg font-semibold mt-2 block cursor-pointer">{produto.nome}</span>
+                <Link to={`/beauty/produtos/${produto.id}`}>
+                  <span className="text-lg font-semibold mt-2 block cursor-pointer">
+                    {produto.nome}
+                  </span>
                 </Link>
                 <p className="text-gray-600">Preço: R$ {produto.preco.toFixed(2)}</p>
                 <div className="flex items-center mt-2">
@@ -127,9 +128,7 @@ const Beauty = () => {
                     <i className="fas fa-cart-plus"></i>
                   </button>
                 </div>
-                <div className="flex items-center mt-2">
-                  {renderStars(4)}
-                </div>
+                <div className="flex items-center mt-2">{renderStars(4)}</div>
               </div>
             ))
           ) : (

@@ -3,36 +3,37 @@ import { FaShoppingCart, FaHeart, FaUserPlus } from 'react-icons/fa';
 import Logo from '../../../src/assets/logo2.png';
 import styles from '../../Shared/Styles/Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
-import useCart from '../../../src/hooks/use-cart'; // Importando o hook do carrinho
-import { useAuth } from '../../../src/AuthContext'; // Certifique-se de que está importando o contexto de autenticação
+import useCart from '../../../src/hooks/use-cart';
+import { useAuth } from '../../../src/AuthContext';
 
 export default function Header() {
   const navigate = useNavigate();
   const { cart } = useCart();
-  const { isAuthenticated, login, logout } = useAuth(); 
+  const { isAuthenticated, login, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [cartItemsCount, setCartItemsCount] = useState(cart.length);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
 
   useEffect(() => {
-    setCartItemsCount(cart.length); // Atualiza a contagem sempre que o carrinho muda
+    setCartItemsCount(cart.length); 
   }, [cart]);
 
-  // Função para busca de produtos
   const handleSearch = (e) => {
     e.preventDefault();
     const searchURL = `/search?query=${encodeURIComponent(searchQuery)}`;
     navigate(searchURL);
   };
 
-  // Mostrar/ocultar menu da conta
   const toggleAccountMenu = () => {
     setShowAccountMenu((prev) => !prev);
   };
 
-  // Fechar menu da conta ao clicar fora
   const handleOutsideClick = (e) => {
-    if (showAccountMenu && !e.target.closest(`.${styles.accountMenu}`) && !e.target.closest(`.${styles.userIcon}`)) {
+    if (
+      showAccountMenu &&
+      !e.target.closest(`.${styles.accountMenu}`) &&
+      !e.target.closest(`.${styles.userIcon}`)
+    ) {
       setShowAccountMenu(false);
     }
   };
@@ -46,31 +47,31 @@ export default function Header() {
 
   return (
     <header>
+      {/* Faixa verde de frete grátis */}
+      <div className={styles.freeShipping}>
+        <p className={styles.freeShippingText}>Frete grátis para pedidos acima de R$200,00!</p>
+      </div>
+
       <div className={styles.bgWhite}>
         <div className={`${styles.container} ${styles.py4}`}>
           <div className={`${styles.flex} ${styles.justifyEnd} ${styles.itemsCenter}`}>
             <div className={styles.flexItemsCenter}>
               <ul className={`${styles.flex} ${styles.spaceX4}`}>
                 <li>
-                  <Link to="login/login" className={styles.navLink}>
-                    Login
-                  </Link>
+                  <Link to="login/login" className={styles.navLink}>Login</Link>
                 </li>
                 <li>
-                  <Link to="/contact/contact" className={styles.navLink}>
-                    Contato
-                  </Link>
+                  <Link to="/contact/contact" className={styles.navLink}>Contato</Link>
                 </li>
                 <li>
-                  <Link to="/order/order" className={styles.navLink}>
-                    Meus pedidos!
-                  </Link>
+                  <Link to="/order/order" className={styles.navLink}>Meus pedidos!</Link>
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
+
       <div className={styles.bgBlack}>
         <div className={`${styles.container} ${styles.py4}`}>
           <div className={`${styles.flex} ${styles.itemsCenter}`}>
@@ -79,31 +80,11 @@ export default function Header() {
             </div>
             <nav className={`${styles.wFull} ${styles.navbar}`}>
               <ul className={`${styles.flex} ${styles.spaceX10}`}>
-                <li>
-                  <Link to="/" className={styles.navbarLink}>
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/fem/female" className={styles.navbarLink}>
-                    Feminino
-                  </Link>
-                </li>
-                <li className={styles.relative}>
-                  <Link to="/man/men" className={styles.navbarLink}>
-                    Masculino
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/sport/sport" className={styles.navbarLink}>
-                    Esporte
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/beauty/page" className={styles.navbarLink}>
-                    Beleza
-                  </Link>
-                </li>
+                <li><Link to="/" className={styles.navbarLink}>Home</Link></li>
+                <li><Link to="/fem/female" className={styles.navbarLink}>Feminino</Link></li>
+                <li><Link to="/man/men" className={styles.navbarLink}>Masculino</Link></li>
+                <li><Link to="/sport/sport" className={styles.navbarLink}>Esporte</Link></li>
+                <li><Link to="/beauty/page" className={styles.navbarLink}>Beleza</Link></li>
               </ul>
 
               <form onSubmit={handleSearch} className={styles.searchForm}>
@@ -114,54 +95,29 @@ export default function Header() {
                   placeholder="Procure por seu produto"
                   className={styles.searchInput}
                 />
-                <button type="submit" className={styles.searchButton}>
-                  Procure
-                </button>
+                <button type="submit" className={styles.searchButton}>Procure</button>
               </form>
-              <div className={`${styles.flex} ${styles.spaceX4} ${styles.divnav}`}>
-                  {isAuthenticated ? (
-                      <div className={styles.relative}>
-                          <FaUserPlus
-                              className={`${styles.iconWhite} ${styles.userIcon}`}
-                              onClick={toggleAccountMenu}
-                          />
-                          {showAccountMenu && (
-                              <div className={`${styles.accountMenu} ${showAccountMenu ? styles.show : ''}`}>
-                                  <Link to="/account/account" className={styles.accountMenuItem}>
-                                      Meu Perfil
-                                  </Link>
-                                  <Link to="/order/order" className={styles.accountMenuItem}>
-                                      Meus Pedidos
-                                  </Link>
-                                  <Link to="/account/coupons" className={styles.accountMenuItem}>
-                                      Meus Cupons
-                                  </Link>
-                                  <button onClick={() => {
-                                      logout(); // Faz o logout
-                                      navigate('/'); // Redireciona para a homepage após logout
-                                  }} className={styles.accountMenuItem}>
-                                      Sair
-                                  </button>
-                              </div>
-                          )}
-                      </div>
-                  ) : (
-                      <Link to="register/register">
-                          <FaUserPlus className={styles.iconWhite} />
-                      </Link>
-                  )}
-  
 
+              <div className={`${styles.flex} ${styles.spaceX4} ${styles.divnav}`}>
+                {isAuthenticated ? (
+                  <div className={styles.relative}>
+                    <FaUserPlus className={`${styles.iconWhite} ${styles.userIcon}`} onClick={toggleAccountMenu} />
+                    {showAccountMenu && (
+                      <div className={`${styles.accountMenu} ${showAccountMenu ? styles.show : ''}`}>
+                        <Link to="/account/account" className={styles.accountMenuItem}>Meu Perfil</Link>
+                        <Link to="/order/order" className={styles.accountMenuItem}>Meus Pedidos</Link>
+                        <Link to="/account/coupons" className={styles.accountMenuItem}>Meus Cupons</Link>
+                        <button onClick={() => { logout(); navigate('/'); }} className={styles.accountMenuItem}>Sair</button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link to="register/register"><FaUserPlus className={styles.iconWhite} /></Link>
+                )}
 
                 <FaHeart
                   className={styles.iconWhite}
-                  onClick={() => {
-                    if (isAuthenticated) {
-                      navigate('/favorite/favorite');
-                    } else {
-                      navigate('/login/login');
-                    }
-                  }}
+                  onClick={() => isAuthenticated ? navigate('/favorite/favorite') : navigate('/login/login')}
                 />
 
                 <Link to="/cart/cart" className={styles.cartIconContainer}>
