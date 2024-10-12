@@ -1,0 +1,111 @@
+/* Layout principal da página */
+.account-settings {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8f8f8;
+}
+
+/* Estilização da barra lateral */
+.sidebar {
+    width: 250px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+}
+
+.sidebar ul li.danger {
+    color: red;
+}
+
+/* Seção principal */
+.profile-content {
+    flex-grow: 1;
+    padding: 40px;
+    background-color: #fff;
+    margin-left: 20px;
+    border-radius: 10px;
+}
+
+/* Cabeçalho do perfil */
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.profile-info h2 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.profile-info p {
+    color: #666;
+    margin: 4px 0;
+}
+
+/* Estilização dos botões de editar */
+.edit-button {
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    background-color: #ddd;
+}
+
+/* Seções de informações pessoais e endereço */
+.personal-info, .address-info {
+    margin-bottom: 40px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h3 {
+    font-size: 18px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.info-grid div {
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 5px;
+}

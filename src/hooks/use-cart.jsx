@@ -1,10 +1,18 @@
 // src/hooks/use-cart.js
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    // Inicializa o carrinho a partir do localStorage
+    return JSON.parse(localStorage.getItem('cart')) || [];
+  });
+
+  useEffect(() => {
+    // Atualiza o localStorage sempre que o carrinho mudar
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
 
   const addProductIntoCart = (product) => {
     setCart((prevCart) => {
@@ -35,6 +43,7 @@ export const CartProvider = ({ children }) => {
     setCart((prevCart) =>
       prevCart.map(item =>
         item.id === id && item.quantidade > 1 ? { ...item, quantidade: item.quantidade - 1 } : item
+        // Não faz nada se a quantidade for 1 ou menos
       )
     );
   };

@@ -36,17 +36,16 @@ export default function RegisterPrinc() {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    setErrorMessage('');  // Resetar mensagens de erro anteriores
-    setSuccess(false);    // Resetar o estado de sucesso anterior
+    setErrorMessage('');  
+    setSuccess(false);    
     try {
-      // Chama o serviço de registro, que faz a requisição ao backend
       await registerUser(data);
       setLoading(false);
-      setSuccess(true); // Define sucesso ao cadastrar
-      reset(); // Reseta o formulário após o sucesso
+      setSuccess(true); 
+      reset(); 
       setTimeout(() => {
-        navigate('/login/login'); // Redireciona o usuário para a página de login após 3 segundos
-      }, 5000); // Mostra o modal por 3 segundos
+        navigate('/login/login'); 
+      }, 5000);
     } catch (error) {
       console.error('Erro ao registrar usuário:', error);
       setErrorMessage('Erro ao registrar usuário. Tente novamente.');
@@ -130,6 +129,14 @@ export default function RegisterPrinc() {
             </button>
           </div>
         </form>
+        <div className="text-center">
+          <p className="mt-2 text-sm text-gray-600">
+            Já tem uma conta?{' '}
+            <a href="/login/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Faça login
+            </a>
+          </p>
+        </div>
       </div>
 
       {success && (

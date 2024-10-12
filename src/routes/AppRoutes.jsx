@@ -11,7 +11,8 @@ import CartRoutes from '../modules/cart/routes/CartRoutes';
 import ContactRoutes from '../modules/contact/routes/ContactRoutes';
 import FavoritesRoutes from '../modules/favorites/routes/FavoritesRoutes';
 import RouteWrapper from '../routes/RouteWrapper'; 
-
+import OrderRoutes from '../modules/Order/routes/OrderRoutes';
+import AccountRoutes from '../modules/account/routes/AccountRoutes';
 const AppRoutes = () => (
   <RouteWrapper>
     <Routes>
@@ -25,6 +26,8 @@ const AppRoutes = () => (
       <Route path="/cart/*" element={<CartRoutes />} />
       <Route path="/contact/*" element={<ContactRoutes />} />
       <Route path="/favorite/*" element={<FavoritesRoutes />} />
+      <Route path="/order/*" element={<OrderRoutes />} />
+      <Route path="/account/*" element={<AccountRoutes />} />
     </Routes>
   </RouteWrapper>
 );

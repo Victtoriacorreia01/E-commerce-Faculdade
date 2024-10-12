@@ -6,20 +6,23 @@ import Header from '../src/Shared/Components/Header';
 import Footer from '../src/Shared/Components/Footer';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './Themes/GlobalTheme';
+import { AuthProvider } from '../src/AuthContext'; // Importando o AuthProvider
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    <CartProvider> 
-      <Router>
-        <GlobalStyles /> 
-        <main>
-          <Header />
-          <AppRoutes /> 
-          <Footer />
-        </main>
-      </Router>
-    </CartProvider>
+    <AuthProvider> {/* Envolvendo com o AuthProvider */}
+      <CartProvider>
+        <Router>
+          <GlobalStyles /> 
+          <main>
+            <Header />
+            <AppRoutes /> 
+            <Footer />
+          </main>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   </ThemeProvider>
 );
 
-export default App;
+export default App; 

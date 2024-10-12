@@ -1,27 +1,48 @@
-'use client';
 import { useState, useEffect } from 'react';
 import { FaShoppingCart, FaHeart, FaUserPlus } from 'react-icons/fa';
 import Logo from '../../../src/assets/logo2.png';
 import styles from '../../Shared/Styles/Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
+import useCart from '../../../src/hooks/use-cart'; // Importando o hook do carrinho
+import { useAuth } from '../../../src/AuthContext'; // Certifique-se de que está importando o contexto de autenticação
 
 export default function Header() {
   const navigate = useNavigate();
+  const { cart } = useCart();
+  const { isAuthenticated, login, logout } = useAuth(); 
   const [searchQuery, setSearchQuery] = useState('');
-  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [cartItemsCount, setCartItemsCount] = useState(cart.length);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
 
-  // Função para lidar com a busca
+  useEffect(() => {
+    setCartItemsCount(cart.length); // Atualiza a contagem sempre que o carrinho muda
+  }, [cart]);
+
+  // Função para busca de produtos
   const handleSearch = (e) => {
     e.preventDefault();
     const searchURL = `/search?query=${encodeURIComponent(searchQuery)}`;
     navigate(searchURL);
   };
 
-  // Simulação de recuperação dos itens no carrinho ao carregar a página
+  // Mostrar/ocultar menu da conta
+  const toggleAccountMenu = () => {
+    setShowAccountMenu((prev) => !prev);
+  };
+
+  // Fechar menu da conta ao clicar fora
+  const handleOutsideClick = (e) => {
+    if (showAccountMenu && !e.target.closest(`.${styles.accountMenu}`) && !e.target.closest(`.${styles.userIcon}`)) {
+      setShowAccountMenu(false);
+    }
+  };
+
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
-    setCartItemsCount(storedCart.length);
-  }, []);
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [showAccountMenu]);
 
   return (
     <header>
@@ -36,12 +57,12 @@ export default function Header() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/shop/contato" className={styles.navLink}>
+                  <Link to="/contact/contact" className={styles.navLink}>
                     Contato
                   </Link>
                 </li>
                 <li>
-                  <Link to="/shop/patrocinio" className={styles.navLink}>
+                  <Link to="/order/order" className={styles.navLink}>
                     Meus pedidos!
                   </Link>
                 </li>
@@ -71,7 +92,6 @@ export default function Header() {
                 <li className={styles.relative}>
                   <Link to="/man/men" className={styles.navbarLink}>
                     Masculino
-                    <i className={`${styles.icon} ${styles.ml1}`}></i>
                   </Link>
                 </li>
                 <li>
@@ -82,14 +102,11 @@ export default function Header() {
                 <li>
                   <Link to="/beauty/page" className={styles.navbarLink}>
                     Beleza
-                    <i className={`${styles.icon} ${styles.ml1}`}></i>
                   </Link>
                 </li>
               </ul>
+
               <form onSubmit={handleSearch} className={styles.searchForm}>
-                <span className={styles.iconLarge}>
-                  <i className="ri-search-line"></i>
-                </span>
                 <input
                   type="search"
                   value={searchQuery}
@@ -102,23 +119,59 @@ export default function Header() {
                 </button>
               </form>
               <div className={`${styles.flex} ${styles.spaceX4} ${styles.divnav}`}>
-                <Link to="register/register">
-                  <FaUserPlus className={styles.iconWhite} />
-                </Link>
-                <Link to="favorite/favorite">
-                  <FaHeart className={styles.iconWhite} />
-                </Link>
+                  {isAuthenticated ? (
+                      <div className={styles.relative}>
+                          <FaUserPlus
+                              className={`${styles.iconWhite} ${styles.userIcon}`}
+                              onClick={toggleAccountMenu}
+                          />
+                          {showAccountMenu && (
+                              <div className={`${styles.accountMenu} ${showAccountMenu ? styles.show : ''}`}>
+                                  <Link to="/account/account" className={styles.accountMenuItem}>
+                                      Meu Perfil
+                                  </Link>
+                                  <Link to="/order/order" className={styles.accountMenuItem}>
+                                      Meus Pedidos
+                                  </Link>
+                                  <Link to="/account/coupons" className={styles.accountMenuItem}>
+                                      Meus Cupons
+                                  </Link>
+                                  <button onClick={() => {
+                                      logout(); // Faz o logout
+                                      navigate('/'); // Redireciona para a homepage após logout
+                                  }} className={styles.accountMenuItem}>
+                                      Sair
+                                  </button>
+                              </div>
+                          )}
+                      </div>
+                  ) : (
+                      <Link to="register/register">
+                          <FaUserPlus className={styles.iconWhite} />
+                      </Link>
+                  )}
+  
+
+
+                <FaHeart
+                  className={styles.iconWhite}
+                  onClick={() => {
+                    if (isAuthenticated) {
+                      navigate('/favorite/favorite');
+                    } else {
+                      navigate('/login/login');
+                    }
+                  }}
+                />
+
                 <Link to="/cart/cart" className={styles.cartIconContainer}>
                   <FaShoppingCart className={styles.iconWhite} />
                   {cartItemsCount > 0 && (
-                    <span className={styles.cartItemCount}>{cartItemsCount}</span>
+                    <span className={styles.cartItemsCount}>{cartItemsCount}</span>
                   )}
                 </Link>
               </div>
             </nav>
-            <div className={styles.freeShipping}>
-              <p className={styles.freeShippingText}>Frete grátis em todos os produtos!!</p>
-            </div>
           </div>
         </div>
       </div>
