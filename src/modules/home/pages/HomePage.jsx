@@ -1,27 +1,46 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; 
 import fotoprincipal from '../../../assets/baixados (55).jpg'; 
+import imgMeninoNegro from '../../../assets/meninonegro.jpg';
+import imgMulherSport from '../../../assets/mulhersport.jpg';
+import imgHomemBranco from '../../../assets/homembranco.jpg';
+import imgSportWoman from '../../../assets/sportwoman.jpg';
+import imgTshirtButton from '../../../assets/tshirtbutton.jpg';
+import imgVans from '../../../assets/vans.jpg';
+import imgTshirtPink from '../../../assets/tshirtpink.jpg';
+import imgBagBlack from '../../../assets/bagblack.jpg';
+import imgBlackDress from '../../../assets/blackdress.jpg';
+import imgBrownTshirt from '../../../assets/browntshirt.jpg';
+import imgJeans from '../../../assets/jeans.jpg';
+import imgBlackBoots from '../../../assets/blackboots.jpg';
+import imgGreenShoes from '../../../assets/greenshoes.jpg';
+import imgBlackShort from '../../../assets/blackshort.jpg';
+import imgDressSclack from '../../../assets/dresssclack.jpg';
+import imgSummerFashion from '../../../assets/summer fashion.jpg';
+import imgAcessorios from '../../../assets/acessorios.jpg';
+import imgGymm from '../../../assets/gymm.jpg';
 import '../../../tailwind.css'; 
-import '../styles/home.css'
+import '../styles/home.css';
 
 const saleItems = [
-  { id: 1, link: '', img: '../../../../src/assets/meninonegro.jpg', subtitle: 'men', title: 'sale 40% off' },
-  { id: 2, link: '', img: '../../../../src/assets/mulhersport.jpg', subtitle: 'sport', title: 'sale 25% off' },
-  { id: 3, link: '', img: '../../../../src/assets/homembranco.jpg', subtitle: 'men', title: 'sale 20% off' },
+  { id: 1, link: '/man/men', img: imgMeninoNegro, subtitle: 'men', title: 'sale 40% off' },
+  { id: 2, link: '/sport/sport', img: imgMulherSport, subtitle: 'sport', title: 'sale 25% off' },
+  { id: 3, link: '/fem/female', img: imgHomemBranco, subtitle: 'men', title: 'sale 20% off' },
 ];
 
 const mustHaveItems = [
-  { id: 1, link: '', img: '../../../../src/assets/sportwoman.jpg', title: 'Gym Clothing Set', oldPrice: 'R$120,00', newPrice: 'R$99,90' },
-  { id: 2, link: '', img: '../../../../src/assets/tshirtbutton.jpg', title: 'T-shirt with buttons', oldPrice: 'R$60,00', newPrice: 'R$45,00' },
-  { id: 3, link: '', img: '../../../../src/assets/vans.jpg', title: 'Pair of high shoes', oldPrice: 'R$150,00', newPrice: 'R$80,00' },
-  { id: 4, link: '', img: '../../../../src/assets/tshirtpink.jpg', title: 'Pink T-shirt', oldPrice: 'R$80,00', newPrice: 'R$65,00' },
-  { id: 5, link: '', img: '../../../../src/assets/bagblack.jpg', title: 'Black bag', oldPrice: 'R$100,00', newPrice: 'R$84,00' },
-  { id: 6, link: '', img: '../../../../src/assets/blackdress.jpg', title: 'Black dress', oldPrice: 'R$200,00', newPrice: 'R$150,00' },
-  { id: 7, link: '', img: '../../../../src/assets/browntshirt.jpg', title: 'Brown T-shirt', oldPrice: 'R$80,00', newPrice: 'R$64,00' },
-  { id: 8, link: '', img: '../../../../src/assets/jeans.jpg', title: 'Simple Jeans', oldPrice: 'R$180,00', newPrice: 'R$120,00' },
-  { id: 9, link: '', img: '../../../../src/assets/blackboots.jpg', title: 'Black Boots', oldPrice: 'R$199,90', newPrice: 'R$100,00' },
-  { id: 10, link: '', img: '../../../../src/assets/greenshoes.jpg', title: 'Set of shorts', oldPrice: 'R$250,00', newPrice: 'R$120,00' },
-  { id: 11, link: '', img: '../../../../src/assets/blackshort.jpg', title: 'Black short', oldPrice: 'R$60,00', newPrice: 'R$38,00' },
-  { id: 12, link: '', img: '../../../../src/assets/dresssclack.jpg', title: 'Black dress with sleeves', oldPrice: 'R$205,00', newPrice: 'R$167,00' },
+  { id: 1, link: '', img: imgSportWoman, title: 'Gym Clothing Set', oldPrice: 'R$120,00', newPrice: 'R$99,90' },
+  { id: 2, link: '', img: imgTshirtButton, title: 'T-shirt with buttons', oldPrice: 'R$60,00', newPrice: 'R$45,00' },
+  { id: 3, link: '', img: imgVans, title: 'Pair of high shoes', oldPrice: 'R$150,00', newPrice: 'R$80,00' },
+  { id: 4, link: '', img: imgTshirtPink, title: 'Pink T-shirt', oldPrice: 'R$80,00', newPrice: 'R$65,00' },
+  { id: 5, link: '', img: imgBagBlack, title: 'Black bag', oldPrice: 'R$100,00', newPrice: 'R$84,00' },
+  { id: 6, link: '', img: imgBlackDress, title: 'Black dress', oldPrice: 'R$200,00', newPrice: 'R$150,00' },
+  { id: 7, link: '', img: imgBrownTshirt, title: 'Brown T-shirt', oldPrice: 'R$80,00', newPrice: 'R$64,00' },
+  { id: 8, link: '', img: imgJeans, title: 'Simple Jeans', oldPrice: 'R$180,00', newPrice: 'R$120,00' },
+  { id: 9, link: '', img: imgBlackBoots, title: 'Black Boots', oldPrice: 'R$199,90', newPrice: 'R$100,00' },
+  { id: 10, link: '', img: imgGreenShoes, title: 'Set of shorts', oldPrice: 'R$250,00', newPrice: 'R$120,00' },
+  { id: 11, link: '', img: imgBlackShort, title: 'Black short', oldPrice: 'R$60,00', newPrice: 'R$38,00' },
+  { id: 12, link: '', img: imgDressSclack, title: 'Black dress with sleeves', oldPrice: 'R$205,00', newPrice: 'R$167,00' },
 ];
 
 const reviews = [
@@ -31,9 +50,9 @@ const reviews = [
 ];
 
 const blogPosts = [
-  { id: 1, title: 'lorem lorem lorem', excerpt: 'lorem', img: '../../../../src/assets/summer fashion.jpg', link: '' },
-  { id: 2, title: 'lorem lorem lorem', excerpt: 'lorem ', img: '../../../../src/assets/acessorios.jpg', link: '' },
-  { id: 3, title: 'lorem lorem lorem', excerpt: 'lorem ', img: '../../../../src/assets/gymm.jpg', link: '/blog/essential-accessories-for-every-outfit' },
+  { id: 1, title: 'lorem lorem lorem', excerpt: 'lorem', img: imgSummerFashion, link: '' },
+  { id: 2, title: 'lorem lorem lorem', excerpt: 'lorem ', img: imgAcessorios, link: '' },
+  { id: 3, title: 'lorem lorem lorem', excerpt: 'lorem ', img: imgGymm, link: '/blog/essential-accessories-for-every-outfit' },
 ];
 
 export default function Home() {
@@ -64,16 +83,16 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-20 justify-center items-center">
             {saleItems.map(item => (
               <div key={item.id} className="relative overflow-hidden shadow-lg rounded transition duration-300 transform hover:scale-105 h-96 w-60">
-                <a href={item.link} className="block overflow-hidden h-full">
+                <Link to={item.link} className="block overflow-hidden h-full">
                   <img src={item.img} alt={item.subtitle} className="w-full h-full object-cover transition-opacity duration-300 transform hover:scale-110" />
-                </a>
+                </Link>
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                   <div className="text-white text-center">
                     <p className="text-gray-200 text-sm">{item.subtitle}</p>
-                    <h4 className="text-black text-xl font-semibold mt-2">Sale {item.title.split(' ')[1]} off</h4>
-                    <button className="mt-4 px-6 py-2 bg-red-500 text-white rounded-full hover:bg-white hover:text-red-500 transition duration-300">
+                    <h4 className="text-white text-xl font-semibold mt-2">Sale {item.title.split(' ')[1]} off</h4>
+                    <Link to={item.link} className="mt-4 px-6 py-2 bg-red-500 text-white rounded-full hover:bg-white hover:text-red-500 transition duration-300">
                       Shop Now
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -89,14 +108,17 @@ export default function Home() {
             {mustHaveItems.map(item => (
               <div key={item.id} className="w-full md:w-1/4 px-4 mb-8 transform transition duration-500 hover:scale-105">
                 <a href={item.link}>
-                  <div className="relative">
-                    <img src={item.img} className="w-full h-64 object-cover transition duration-500 ease-in-out transform hover:scale-110" alt={item.title} />
+                  <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <img src={item.img} alt={item.title} className="w-full h-48 object-cover" />
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold">{item.title}</h3>
+                      <div className="flex justify-between items-center mt-2">
+                        <span className="text-gray-500 line-through">{item.oldPrice}</span>
+                        <span className="text-red-500 font-bold">{item.newPrice}</span>
+                      </div>
+                    </div>
                   </div>
                 </a>
-                <h4 className="text-black text-lg font-semibold mt-4">{item.title}</h4>
-                <p className="text-gray-600">
-                  <del>{item.oldPrice}</del> <span className="font-semibold text-red-500">{item.newPrice}</span>
-                </p>
               </div>
             ))}
           </div>
@@ -108,17 +130,17 @@ export default function Home() {
           <h2 className="text-black text-3xl text-center mb-12 font-semibold">Customer Reviews</h2>
           <div className="flex flex-wrap justify-center">
             {reviews.map(review => (
-              <div key={review.id} className="w-full md:w-1/3 px-4 mb-8">
-                <div className="bg-gray-100 p-6 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
-                  <h3 className="text-black text-xl font-semibold mb-4">{review.name}</h3>
-                  <p className="text-gray-700 mb-4">{review.text}</p>
-                  <div className="flex items-center">
-                    {Array.from({ length: review.rating }, (_, index) => (
-                      <svg key={index} className="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 15.27L16.18 20 14.54 13.97 20 9.24 13.81 8.63 10 2 6.19 8.63 0 9.24 5.46 13.97 3.82 20z" />
+              <div key={review.id} className="w-full md:w-1/4 px-4 mb-8">
+                <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                  <h3 className="text-lg font-semibold">{review.name}</h3>
+                  <div className="flex items-center mt-2">
+                    {[...Array(review.rating)].map((_, index) => (
+                      <svg key={index} xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                       </svg>
                     ))}
                   </div>
+                  <p className="text-gray-700 mt-2">{review.text}</p>
                 </div>
               </div>
             ))}
@@ -131,16 +153,16 @@ export default function Home() {
           <h2 className="text-black text-3xl text-center mb-12 font-semibold">Latest Blog Posts</h2>
           <div className="flex flex-wrap justify-center">
             {blogPosts.map(post => (
-              <div key={post.id} className="w-full md:w-1/3 px-4 mb-8">
-                <a href={post.link}>
-                  <div className="bg-white rounded-lg shadow-lg overflow-hidden transition duration-300 transform hover:scale-105">
+              <div key={post.id} className="w-full md:w-1/4 px-4 mb-8">
+                <Link to={post.link}>
+                  <div className="bg-white shadow-lg rounded-lg overflow-hidden">
                     <img src={post.img} alt={post.title} className="w-full h-48 object-cover" />
-                    <div className="p-6">
-                      <h3 className="text-black text-xl font-semibold mb-2">{post.title}</h3>
-                      <p className="text-gray-700 mb-4">{post.excerpt}</p>
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold">{post.title}</h3>
+                      <p className="text-gray-500 mt-2">{post.excerpt}</p>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
             ))}
           </div>
