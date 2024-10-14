@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.css';
 import useCart from '../../../hooks/use-cart';
 import { getProductsByCategory } from '../services/BeautyService'; 
+import { addToFavorites, removeFromFavorites } from '../../favorites/services/FavoriteService'; 
 
 const Beauty = () => {
   const { addProductIntoCart } = useCart();
@@ -11,14 +12,18 @@ const Beauty = () => {
   const [sortOption, setSortOption] = useState('relevancy');
   const [produtos, setProdutos] = useState([]); 
 
-  const toggleFavorite = (produtoId) => {
-    setFavorites((prevFavorites) => {
-      const updatedFavorites = prevFavorites.includes(produtoId)
-        ? prevFavorites.filter((id) => id !== produtoId)
-        : [...prevFavorites, produtoId];
-      localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-      return updatedFavorites;
-    });
+  const toggleFavorite = async (produtoId) => {
+    try {
+      if (favorites.includes(produtoId)) {
+        await removeFromFavorites(produtoId);
+        setFavorites((prevFavorites) => prevFavorites.filter((id) => id !== produtoId));
+      } else {
+        await addToFavorites(produtoId);
+        setFavorites((prevFavorites) => [...prevFavorites, produtoId]);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar favoritos:', error);
+    }
   };
 
   useEffect(() => {
@@ -34,7 +39,7 @@ const Beauty = () => {
           id: produto.id,
           nome: produto.name, 
           preco: produto.price, 
-          imagem: `http://localhost:8080/images/beauty/${produto.imageUrl.split('/').pop()}` 
+          imagem: `http://localhost:8080/${produto.imageUrl}` 
         }))); 
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
@@ -119,7 +124,7 @@ const Beauty = () => {
                     className={`ml-3 mr-3 ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500 hover:text-red-800'}`}
                     onClick={() => toggleFavorite(produto.id)}
                   >
-                    <i className="fas fa-heart"></i>
+                    <i className={`fas fa-heart ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500 hover:text-red-800'}`}></i>
                   </button>
                   <button
                     className="text-green-500 hover:text-green-700"

@@ -9,13 +9,13 @@ import { useAuth } from '../../../src/AuthContext';
 export default function Header() {
   const navigate = useNavigate();
   const { cart } = useCart();
-  const { isAuthenticated, login, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [cartItemsCount, setCartItemsCount] = useState(cart.length);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
 
   useEffect(() => {
-    setCartItemsCount(cart.length); 
+    setCartItemsCount(cart.length);
   }, [cart]);
 
   const handleSearch = (e) => {
@@ -45,11 +45,22 @@ export default function Header() {
     };
   }, [showAccountMenu]);
 
+  const handleLogout = () => {
+    console.log("Logout clicado!"); // Log para debugging
+    logout(); // Realiza o logout
+    setTimeout(() => {
+        navigate('/', { replace: true }); // Redireciona para a homepage
+        console.log("Redirecionando para a homepage..."); // Log para debugging
+    }, 100); // Delay de 100ms
+  };
+
   return (
     <header>
       {/* Faixa verde de frete grátis */}
       <div className={styles.freeShipping}>
-        <p className={styles.freeShippingText}>Frete grátis para pedidos acima de R$200,00!</p>
+        <p className={styles.freeShippingText}>
+          Frete grátis para pedidos acima de R$200,00!
+        </p>
       </div>
 
       <div className={styles.bgWhite}>
@@ -58,7 +69,7 @@ export default function Header() {
             <div className={styles.flexItemsCenter}>
               <ul className={`${styles.flex} ${styles.spaceX4}`}>
                 <li>
-                  <Link to="login/login" className={styles.navLink}>Login</Link>
+                  <Link to="/login/login" className={styles.navLink}>Login</Link>
                 </li>
                 <li>
                   <Link to="/contact/contact" className={styles.navLink}>Contato</Link>
@@ -99,25 +110,37 @@ export default function Header() {
               </form>
 
               <div className={`${styles.flex} ${styles.spaceX4} ${styles.divnav}`}>
-                {isAuthenticated ? (
-                  <div className={styles.relative}>
-                    <FaUserPlus className={`${styles.iconWhite} ${styles.userIcon}`} onClick={toggleAccountMenu} />
-                    {showAccountMenu && (
-                      <div className={`${styles.accountMenu} ${showAccountMenu ? styles.show : ''}`}>
-                        <Link to="/account/account" className={styles.accountMenuItem}>Meu Perfil</Link>
-                        <Link to="/order/order" className={styles.accountMenuItem}>Meus Pedidos</Link>
-                        <Link to="/account/coupons" className={styles.accountMenuItem}>Meus Cupons</Link>
-                        <button onClick={() => { logout(); navigate('/'); }} className={styles.accountMenuItem}>Sair</button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <Link to="register/register"><FaUserPlus className={styles.iconWhite} /></Link>
-                )}
+              {isAuthenticated ? (
+  <div className={styles.relative}>
+    <FaUserPlus
+      className={`${styles.iconWhite} ${styles.userIcon}`}
+      onClick={toggleAccountMenu}
+    />
+    {showAccountMenu && (
+      <div className={`${styles.accountMenu} ${showAccountMenu ? styles.show : ''}`}>
+        <Link to="/account/account" className={styles.accountMenuItem}>Meu Perfil</Link>
+        <Link to="/order/order" className={styles.accountMenuItem}>Meus Pedidos</Link>
+        <Link to="/account/coupons" className={styles.accountMenuItem}>Meus Cupons</Link>
+        <button
+          onClick={handleLogout}
+          className={styles.accountMenuItem}
+        >
+          Sair
+        </button>
+      </div>
+    )}
+  </div>
+) : (
+  <Link to="/register/register">
+    <FaUserPlus className={styles.iconWhite} />
+  </Link>
+)}
 
                 <FaHeart
                   className={styles.iconWhite}
-                  onClick={() => isAuthenticated ? navigate('/favorite/favorite') : navigate('/login/login')}
+                  onClick={() =>
+                    isAuthenticated ? navigate('/favorite/favorite') : navigate('/login/login')
+                  }
                 />
 
                 <Link to="/cart/cart" className={styles.cartIconContainer}>

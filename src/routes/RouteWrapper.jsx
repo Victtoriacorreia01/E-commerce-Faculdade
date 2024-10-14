@@ -7,8 +7,6 @@ const RouteWrapper = ({ children, isProtected = false }) => {
 
   // Verificar autenticação
   const authToken = localStorage.getItem('authToken');
-
-  // Caso a rota seja protegida, verificar se o usuário está autenticado
   if (isProtected && !authToken) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />; // Redireciona para a página de login
   }
