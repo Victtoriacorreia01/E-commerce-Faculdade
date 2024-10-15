@@ -13,6 +13,7 @@ const Beauty = () => {
   const [produtos, setProdutos] = useState([]); 
 
   const toggleFavorite = async (produtoId) => {
+    console.log('Produto ID:', produtoId);
     try {
       if (favorites.includes(produtoId)) {
         await removeFromFavorites(produtoId);
@@ -35,12 +36,14 @@ const Beauty = () => {
     const fetchProducts = async () => {
       try {
         const data = await getProductsByCategory('beauty'); 
+
         setProdutos(data.map(produto => ({
           id: produto.id,
           nome: produto.name, 
           preco: produto.price, 
           imagem: `http://localhost:8080/${produto.imageUrl}` 
-        }))); 
+        })));
+
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
       }
@@ -87,7 +90,9 @@ const Beauty = () => {
             <option value="price_asc">Preço - Baixo para Alto</option>
             <option value="price_desc">Preço - Alto para Baixo</option>
           </select>
+
           <h2 className="text-xl font-bold text-gray-800 my-4">Filtros</h2>
+
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-gray-700 mb-2">Preços</h3>
             <input
@@ -113,12 +118,15 @@ const Beauty = () => {
                     className="rounded-lg w-full h-full object-contain"
                   />
                 </div>
+
                 <Link to={`/beauty/produtos/${produto.id}`}>
                   <span className="text-lg font-semibold mt-2 block cursor-pointer">
                     {produto.nome}
                   </span>
                 </Link>
+
                 <p className="text-gray-600">Preço: R$ {produto.preco.toFixed(2)}</p>
+
                 <div className="flex items-center mt-2">
                   <button
                     className={`ml-3 mr-3 ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500 hover:text-red-800'}`}
@@ -126,6 +134,7 @@ const Beauty = () => {
                   >
                     <i className={`fas fa-heart ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500 hover:text-red-800'}`}></i>
                   </button>
+
                   <button
                     className="text-green-500 hover:text-green-700"
                     onClick={() => addProductIntoCart(produto)}
@@ -133,6 +142,7 @@ const Beauty = () => {
                     <i className="fas fa-cart-plus"></i>
                   </button>
                 </div>
+
                 <div className="flex items-center mt-2">{renderStars(4)}</div>
               </div>
             ))

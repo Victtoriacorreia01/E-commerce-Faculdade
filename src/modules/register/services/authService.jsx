@@ -2,7 +2,11 @@ import { poster } from '../../../utils/axiosConfig';
 
 export const registerUser = async (data) => {
   try {
-    const response = await poster('auth/register', data); 
+    const response = await poster('auth/register', data, {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  }); 
 
     console.log('Resposta completa da criação do usuário:', response);
 
