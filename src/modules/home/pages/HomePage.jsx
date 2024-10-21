@@ -21,6 +21,8 @@ import imgAcessorios from '../../../assets/acessorios.jpg';
 import imgGymm from '../../../assets/gymm.jpg';
 import '../../../tailwind.css'; 
 import '../styles/home.css';
+import 'animate.css';
+
 
 const saleItems = [
   { id: 1, link: '/man/men', img: imgMeninoNegro, subtitle: 'men', title: 'sale 40% off' },
@@ -58,9 +60,9 @@ const blogPosts = [
 export default function Home() {
   return (
     <div>
-      <header className="py-20 bg-white">
+      <section className="py-20 bg-white">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-4">
-          <div className="text-center md:text-left animate__animated animate__fadeInLeft">
+          <div className="text-center md:text-left animate__animated animate__fadeInLeft mb-28">
             <p className="text-red-700 font-semibold mb-2 animate__animated animate__bounceInLeft animate__delay-1s">
               EXTRA 55% OFF IN SPRING SALE
             </p>
@@ -75,10 +77,9 @@ export default function Home() {
             <img src={fotoprincipal} alt="Spring Sale" className="imgprinc rounded-lg animate__animated animate__zoomIn animate__delay-3s" />
           </div>
         </div>
-      </header>
-
+      </section>
       <section className="bg-white py-20">
-        <div className="container mx-auto flex flex-col items-center">
+        <div className="container mx-auto flex flex-col items-center ">
           <h2 className="text-black text-3xl text-center mb-12 font-semibold">On Sale</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-20 justify-center items-center">
             {saleItems.map(item => (
@@ -111,7 +112,7 @@ export default function Home() {
                   <div className="bg-white shadow-lg rounded-lg overflow-hidden">
                     <img src={item.img} alt={item.title} className="w-full h-48 object-cover" />
                     <div className="p-4">
-                      <h3 className="text-lg font-semibold">{item.title}</h3>
+                      <h3 className="text-lg font-semibold text-black">{item.title}</h3>
                       <div className="flex justify-between items-center mt-2">
                         <span className="text-gray-500 line-through">{item.oldPrice}</span>
                         <span className="text-red-500 font-bold">{item.newPrice}</span>
@@ -132,7 +133,7 @@ export default function Home() {
             {reviews.map(review => (
               <div key={review.id} className="w-full md:w-1/4 px-4 mb-8">
                 <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold">{review.name}</h3>
+                  <h3 className="text-lg font-semibold text-black">{review.name}</h3>
                   <div className="flex items-center mt-2">
                     {[...Array(review.rating)].map((_, index) => (
                       <svg key={index} xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -156,9 +157,9 @@ export default function Home() {
               <div key={post.id} className="w-full md:w-1/4 px-4 mb-8">
                 <Link to={post.link}>
                   <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <img src={post.img} alt={post.title} className="w-full h-48 object-cover" />
+                    <img src={post.img} alt={post.title} className="w-full h-98 object-cover" />
                     <div className="p-4">
-                      <h3 className="text-lg font-semibold">{post.title}</h3>
+                      <h3 className="text-lg font-semibold text-black">{post.title}</h3>
                       <p className="text-gray-500 mt-2">{post.excerpt}</p>
                     </div>
                   </div>

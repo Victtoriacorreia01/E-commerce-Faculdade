@@ -13,23 +13,16 @@ const Cart = () => {
   useEffect(() => {
     const calculateTotal = () => {
       const newTotal = cart.reduce((acc, item) => {
-        const preco = parseFloat(item.preco);
+        const preco = parseFloat(item.preco) || 0;
         const quantidade = item.quantidade || 1;
-
-        if (isNaN(preco)) {
-          console.warn(`Dados inválidos para o item ${item.nome}. Preço: ${preco}`);
-          return acc;
-        }
-
-        return acc + (preco * quantidade);
+        return acc + preco * quantidade;
       }, 0).toFixed(2);
-
+  
       setTotal(newTotal);
     };
-
+  
     calculateTotal();
-  }, [cart]);
-
+  }, [cart]); //
   const handleRemoveItem = (id) => {
     removeProductFromCart(id);
   };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaShoppingCart, FaHeart, FaUserPlus } from 'react-icons/fa';
+import { FaShoppingCart, FaHeart, FaUserPlus, FaSearch } from 'react-icons/fa';
 import Logo from '../../../src/assets/logo2.png';
 import styles from '../../Shared/Styles/Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,12 +17,17 @@ export default function Header() {
   useEffect(() => {
     setCartItemsCount(cart.length);
   }, [cart]);
-
+  
+  
   const handleSearch = (e) => {
     e.preventDefault();
-    const searchURL = `/search?query=${encodeURIComponent(searchQuery)}`;
-    navigate(searchURL);
-  };
+    if (searchQuery.trim()) {
+        navigate(`search/search?query=${encodeURIComponent(searchQuery)}`);
+        setSearchQuery(''); 
+    }
+};
+
+
 
   const toggleAccountMenu = () => {
     setShowAccountMenu((prev) => !prev);
@@ -46,17 +51,16 @@ export default function Header() {
   }, [showAccountMenu]);
 
   const handleLogout = () => {
-    console.log("Logout clicado!"); // Log para debugging
-    logout(); // Realiza o logout
+    console.log("Logout clicado!"); 
+    logout(); 
     setTimeout(() => {
-        navigate('/', { replace: true }); // Redireciona para a homepage
-        console.log("Redirecionando para a homepage..."); // Log para debugging
-    }, 100); // Delay de 100ms
+        navigate('/', { replace: true }); 
+        console.log("Redirecionando para a homepage..."); 
+    }, 100); 
   };
 
   return (
     <header>
-      {/* Faixa verde de frete grátis */}
       <div className={styles.freeShipping}>
         <p className={styles.freeShippingText}>
           Frete grátis para pedidos acima de R$200,00!
@@ -97,34 +101,34 @@ export default function Header() {
                 <li><Link to="/sport/sport" className={styles.navbarLink}>Esporte</Link></li>
                 <li><Link to="/beauty/page" className={styles.navbarLink}>Beleza</Link></li>
               </ul>
-
               <form onSubmit={handleSearch} className={styles.searchForm}>
-                <input
-                  type="search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Procure por seu produto"
-                  className={styles.searchInput}
-                />
-                <button type="submit" className={styles.searchButton}>Procure</button>
-              </form>
-
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Procure o que deseja" 
+                    className={styles.searchInput}
+                  />
+                  <button type="submit" className={styles.searchButton}>
+                    <FaSearch className={styles.searchIcon} /> 
+                  </button>
+                </form>
               <div className={`${styles.flex} ${styles.spaceX4} ${styles.divnav}`}>
               {isAuthenticated ? (
-  <div className={styles.relative}>
-    <FaUserPlus
-      className={`${styles.iconWhite} ${styles.userIcon}`}
-      onClick={toggleAccountMenu}
-    />
-    {showAccountMenu && (
-      <div className={`${styles.accountMenu} ${showAccountMenu ? styles.show : ''}`}>
-        <Link to="/account/account" className={styles.accountMenuItem}>Meu Perfil</Link>
-        <Link to="/order/order" className={styles.accountMenuItem}>Meus Pedidos</Link>
-        <Link to="/account/coupons" className={styles.accountMenuItem}>Meus Cupons</Link>
-        <button
-          onClick={handleLogout}
-          className={styles.accountMenuItem}
-        >
+              <div className={styles.relative}>
+                <FaUserPlus
+                  className={`${styles.iconWhite} ${styles.userIcon}`}
+                  onClick={toggleAccountMenu}
+                />
+            {showAccountMenu && (
+              <div className={`${styles.accountMenu} ${showAccountMenu ? styles.show : ''}`}>
+                <Link to="/account/account" className={styles.accountMenuItem}>Meu Perfil</Link>
+                <Link to="/order/order" className={styles.accountMenuItem}>Meus Pedidos</Link>
+                <Link to="/account/coupons" className={styles.accountMenuItem}>Meus Cupons</Link>
+                <button
+                  onClick={handleLogout}
+                  className={styles.accountMenuItem}
+                >
           Sair
         </button>
       </div>
@@ -142,11 +146,12 @@ export default function Header() {
                     isAuthenticated ? navigate('/favorite/favorite') : navigate('/login/login')
                   }
                 />
-
                 <Link to="/cart/cart" className={styles.cartIconContainer}>
                   <FaShoppingCart className={styles.iconWhite} />
                   {cartItemsCount > 0 && (
-                    <span className={styles.cartItemsCount}>{cartItemsCount}</span>
+                    <span className={`${styles.cartItemsCount} bg-pink-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs absolute -top-0 -right-4`}>
+                      {cartItemsCount}
+                    </span>
                   )}
                 </Link>
               </div>
