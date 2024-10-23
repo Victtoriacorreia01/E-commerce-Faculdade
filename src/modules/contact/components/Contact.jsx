@@ -56,7 +56,7 @@ export default function ContactForm() {
     const onError = (errors) => console.log(errors);
 
     return (
-        <div className=" mt-5 relative min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className=" mt-10 relative min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
                     <div className="loader"></div>

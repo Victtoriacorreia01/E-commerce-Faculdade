@@ -1,0 +1,132 @@
+/* Container principal */
+.login-container {
+    display: flex;
+    justify-content: center;
+    margin-top: -30px;
+    align-items: center;
+    min-height: 90vh;
+    background-color: #fafafa; /* Cor de fundo leve */
+    padding: 20px;
+  }
+  
+  /* Formulário de login */
+  .login-form {
+    max-width: 500px; /* Largura máxima */
+    width: 500px; /* Largura total */
+    background-color: #ffffff; /* Fundo branco */
+    padding: 40px; /* Padding maior para mais espaço */
+    border-radius: 12px; /* Cantos arredondados */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
+    transition: transform 0.3s; /* Efeito de transformação suave */
+  }
+  
+  .login-form:hover {
+    transform: scale(1.02); /* Leve aumento ao passar o mouse */
+  }
+  
+  /* Logo */
+  .logo {
+    display: block;
+    margin: 0 auto 20px;
+    height: 60px; /* Ajuste conforme necessário */
+  }
+  
+  /* Título */
+  .login-form h2 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333; /* Cor escura */
+    margin-bottom: 20px; /* Espaçamento inferior */
+  }
+  
+  /* Grupos de entrada */
+  .input-group {
+    margin-bottom: 20px;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600; /* Fonte em negrito */
+    color: #555555; /* Cor para o texto do rótulo */
+  }
+  
+  /* Estilo dos campos de entrada */
+  input {
+    width: 100%;
+    padding: 12px; /* Padding maior para conforto */
+    border: 2px solid #d1d5db; /* Borda cinza */
+    border-radius: 8px; /* Cantos arredondados */
+    font-size: 16px;
+    transition: border-color 0.3s; /* Transição suave na borda */
+  }
+  
+  input.error {
+    border-color: #ef4444; /* Borda vermelha se houver erro */
+  }
+  
+  input:focus {
+    border-color: #4f46e5; /* Borda azul ao focar */
+    outline: none; /* Remove contorno padrão */
+  }
+  
+  /* Mensagens de erro */
+  .error-message {
+    color: #ef4444; /* Mensagens de erro em vermelho */
+    font-size: 12px;
+  }
+  
+  .error {
+    color: #ef4444; /* Mensagem de erro geral em vermelho */
+    text-align: center;
+  }
+  
+  .success {
+    color: #4caf50; /* Mensagem de sucesso em verde */
+    text-align: center;
+  }
+  
+  /* Botão de envio */
+  .submit-button {
+    width: 100%;
+    padding: 12px; /* Padding maior para conforto */
+    background-color: #4f46e5; /* Cor do botão */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Cantos arredondados */
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s; /* Transições suaves */
+  }
+  
+  .submit-button:hover {
+    background-color: #4338ca; /* Cor do botão ao passar o mouse */
+    transform: translateY(-2px); /* Eleva o botão ao passar o mouse */
+  }
+  
+  /* Link de registro */
+  .register-link {
+    text-align: center;
+  }
+  
+  .register-link a {
+    color: #4f46e5; /* Cor do link */
+    text-decoration: underline; /* Sublinhado */
+  }
+  
+  .register-link a:hover {
+    color: #3730a3; /* Cor do link ao passar o mouse */
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .login-form {
+      padding: 30px; /* Ajusta padding para telas menores */
+    }
+  
+    .login-form h2 {
+      font-size: 20px; /* Tamanho da fonte menor */
+    }
+  }
+  

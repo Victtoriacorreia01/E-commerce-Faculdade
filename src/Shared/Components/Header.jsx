@@ -106,7 +106,7 @@ export default function Header() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Procure o que deseja" 
+                    placeholder="Procure oque deseja" 
                     className={styles.searchInput}
                   />
                   <button type="submit" className={styles.searchButton}>

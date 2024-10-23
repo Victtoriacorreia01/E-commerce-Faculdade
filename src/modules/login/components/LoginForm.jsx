@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/loginService';
 import Logo from '../../../assets/logo.png';
-import { useAuth } from '../../../AuthContext'; 
+import { useAuth } from '../../../AuthContext';
 
 const loginFormSchema = z.object({
   email: z.string().min(1, 'O e-mail é obrigatório.').email('Informe um endereço de e-mail válido.'),
@@ -16,8 +16,8 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  
-  const { login } = useAuth(); // Use o login ao invés de setIsAuthenticated
+
+  const { login } = useAuth();
 
   const {
     register,
@@ -42,35 +42,31 @@ export default function LoginForm() {
     setSuccess(false);
 
     try {
-        const token = await loginUser(data);
+      const token = await loginUser(data);
+
+      console.log('Token recebido:', token);
+
+      if (token) {
+        login(token);
+        setSuccess(true);
         
-        // Log do token recebido para depuração
-        console.log('Token recebido:', token); 
-
-        if (token) {
-            // Agora você deve usar a função login do contexto para autenticar o usuário
-            login(token); // Aqui você chama a função login para armazenar o token
-            setSuccess(true);
-            
-            // Redireciona após sucesso
-            setTimeout(() => {
-                navigate('/'); 
-            }, 1000);
-        } else {
-            throw new Error('Token não recebido.'); // Erro se o token não estiver presente
-        }
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } else {
+        throw new Error('Token não recebido.');
+      }
     } catch (error) {
-        console.error('Erro ao fazer login:', error); // Log detalhado do erro
-        const errorMessage = error?.response?.data?.message || 'Erro ao fazer login. Verifique suas credenciais.';
-        setError(errorMessage);
+      console.error('Erro ao fazer login:', error);
+      const errorMessage = error?.response?.data?.message || 'Erro ao fazer login. Verifique suas credenciais.';
+      setError(errorMessage);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
-
+  };
 
   return (
-    <div className="mt-5 relative min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="mt-10 relative min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <img className="mx-auto h-12 w-auto" src={Logo} alt="Logo" />
@@ -90,7 +86,7 @@ export default function LoginForm() {
                 autoComplete="email"
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
                   errors.email ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                 placeholder="E-mail"
                 {...register('email')}
               />
@@ -106,7 +102,7 @@ export default function LoginForm() {
                 autoComplete="current-password"
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
                   errors.password ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                 placeholder="Senha"
                 {...register('password')}
               />

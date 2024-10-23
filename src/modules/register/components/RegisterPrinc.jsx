@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,28 +23,20 @@ export default function RegisterPrinc() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
-    defaultValues: {
-      email: '',
-      name: '',
-      password: '',
-      passwordConfirmation: '',
-    },
-    mode: 'onBlur',
-    criteriaMode: 'all',
     resolver: zodResolver(createUserFormSchema),
   });
 
   const onSubmit = async (data) => {
     setLoading(true);
-    setErrorMessage('');  
-    setSuccess(false);    
+    setErrorMessage('');
+    setSuccess(false);
     try {
       await registerUser(data);
+      setSuccess(true);
       setLoading(false);
-      setSuccess(true); 
-      reset(); 
+      reset(); // Limpa os campos após o cadastro bem-sucedido
       setTimeout(() => {
-        navigate('/login/login'); 
+        navigate('/login/login', { replace: true }); // Substitui a entrada atual no histórico
       }, 5000);
     } catch (error) {
       console.error('Erro ao registrar usuário:', error);
@@ -55,8 +47,12 @@ export default function RegisterPrinc() {
 
   const onError = (errors) => console.log(errors);
 
+  useEffect(() => {
+    reset(); // Limpa os campos quando o componente é montado
+  }, [reset]);
+
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="mt-10 relative min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <img className="mx-auto h-12 w-auto" src={Logo} alt="Logo" />
@@ -71,7 +67,7 @@ export default function RegisterPrinc() {
               <input
                 id="email"
                 type="email"
-                autoComplete="email"
+                autoComplete="off"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="E-mail"
                 {...register('email')}
@@ -83,7 +79,7 @@ export default function RegisterPrinc() {
               <input
                 id="name"
                 type="text"
-                autoComplete="name"
+                autoComplete="off"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Nome"
                 {...register('name')}
@@ -95,7 +91,7 @@ export default function RegisterPrinc() {
               <input
                 id="password"
                 type="password"
-                autoComplete="new-password"
+                autoComplete="off"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Senha"
                 {...register('password')}
@@ -107,7 +103,7 @@ export default function RegisterPrinc() {
               <input
                 id="passwordConfirmation"
                 type="password"
-                autoComplete="new-password"
+                autoComplete="off"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Confirme sua senha"
                 {...register('passwordConfirmation')}

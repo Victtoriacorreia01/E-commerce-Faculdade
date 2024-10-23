@@ -83,6 +83,14 @@
 
 .navbarLink:hover::after {
   width: 100%;
+  
+}
+
+.navbarLink{
+  color: #f7fafc;
+}
+.navbarLink:hover{
+  color: #f7fafc;
 }
 
 .navbarLink::after {
@@ -90,9 +98,10 @@
   display: block;
   width: 0%;
   height: 3px;
-  background-color: #f56565;
+  background-color: #ff0e5f;
+  color: #f7fafc;
   position: absolute;
-  bottom: -3px;
+  bottom: -5px;
   left: 0;
   transition: width 0.3s ease-in-out;
 }
@@ -135,7 +144,7 @@
 }
 
 .searchButton {
-  background-color: #f56565;
+  background-color:  #ff0e5f;
   color: white;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -154,14 +163,14 @@
 }
 
 .iconWhite {
-  margin-top: 8px;
+  margin-top: 2px;
   color: white;
   width: 1.6rem;
   height: 1.8rem;
 }
 
 .iconWhite:hover {
-  color: rgb(158, 231, 145);
+  color:  #ff0e5f;
   width: 1.8rem;
   height: 1.8rem;
 }

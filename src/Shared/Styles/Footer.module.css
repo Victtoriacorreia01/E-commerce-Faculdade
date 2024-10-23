@@ -1,0 +1,131 @@
+footer {
+    background-color: black;
+    color: white;
+    padding: 3rem 0;
+  }
+
+  .h {
+    color:  #ff0e5f;
+    font-size: 20px;
+    font-weight: bold; 
+    margin-left: 30px;
+  }
+  .direitos{
+    color: white;
+  }
+
+  .email{
+    color: white;
+  }
+  .num{
+    color: white;
+  }
+  
+  
+  .container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 0 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  @media (min-width: 768px) {
+    .container {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  
+  footer img {
+    height: 68px;
+    margin-bottom: 2rem;
+  }
+  
+  .newsletter p {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #f87171;
+  }
+  
+  .newsletter input {
+    background-color: transparent;
+    border: none;
+    flex: 1;
+    color: #4b5563;
+    padding: 0.25rem 0.5rem;
+    outline: none;
+    margin-top: 30px;
+  }
+  
+  .newsletter button {
+    background-color: #22c55e;
+    color: white;
+    padding: 0.25rem 1rem;
+    border: 1px solid #22c55e;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    margin-top: 30px;
+  }
+  
+  .newsletter button:hover {
+    background-color: #ec4899;
+    border-color: #ec4899;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-left: 30px;
+  }
+  
+  li {
+    margin: 0.5rem 0;
+    cursor: pointer;
+  }
+  
+  li:hover {
+    color: #a3a3a3;
+  }
+  
+  .contact-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .social-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .social-icons svg {
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .social-icons svg:hover {
+    color: #22c55e;
+  }
+  
+  .footer-bottom {
+    border-top: 1px solid #6b7280;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    text-align: center;
+  }
+  
+  .footer-bottom a {
+    margin: 0 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+  }
+  
+  .footer-bottom a:hover {
+    color: #a3a3a3;
+  }
+  
