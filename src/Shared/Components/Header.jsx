@@ -50,14 +50,15 @@ export default function Header() {
     };
   }, [showAccountMenu]);
 
+  
+
   const handleLogout = () => {
     console.log("Logout clicado!"); 
     logout(); 
-    setTimeout(() => {
-        navigate('/', { replace: true }); 
-        console.log("Redirecionando para a homepage..."); 
-    }, 100); 
-  };
+    console.log("Redirecionando para a homepage..."); 
+    navigate('/', { replace: true }); 
+};
+
 
   return (
     <header>
@@ -129,16 +130,16 @@ export default function Header() {
                   onClick={handleLogout}
                   className={styles.accountMenuItem}
                 >
-          Sair
-        </button>
-      </div>
-    )}
-  </div>
-) : (
-  <Link to="/register/register">
-    <FaUserPlus className={styles.iconWhite} />
-  </Link>
-)}
+                  Sair
+                </button>
+              </div>
+            )}
+          </div>
+                  ) : (
+                    <Link to="/register/register">
+                      <FaUserPlus className={styles.iconWhite} />
+                    </Link>
+                  )}
 
                 <FaHeart
                   className={styles.iconWhite}

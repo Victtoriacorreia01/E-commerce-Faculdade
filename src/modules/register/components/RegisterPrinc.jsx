@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../services/authService'; // Importando o serviço
-import { AiOutlineMail } from 'react-icons/ai'; // Importando o ícone de e-mail
+import { registerUser } from '../services/authService'; 
+import { AiOutlineMail } from 'react-icons/ai'; 
 import Logo from "../../../assets/logo.png";
 
 const createUserFormSchema = z.object({
@@ -30,26 +30,31 @@ export default function RegisterPrinc() {
     setLoading(true);
     setErrorMessage('');
     setSuccess(false);
+  
     try {
       await registerUser(data);
       setSuccess(true);
+      reset(); 
       setLoading(false);
-      reset(); // Limpa os campos após o cadastro bem-sucedido
+  
+      
       setTimeout(() => {
-        navigate('/login/login', { replace: true }); // Substitui a entrada atual no histórico
-      }, 5000);
+        navigate('/login/login', { replace: true });
+      }, 5000); 
     } catch (error) {
       console.error('Erro ao registrar usuário:', error);
       setErrorMessage('Erro ao registrar usuário. Tente novamente.');
       setLoading(false);
     }
   };
+  
 
   const onError = (errors) => console.log(errors);
 
   useEffect(() => {
-    reset(); // Limpa os campos quando o componente é montado
+    return () => reset();
   }, [reset]);
+  
 
   return (
     <div className="mt-10 relative min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -60,14 +65,14 @@ export default function RegisterPrinc() {
             Crie sua conta
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit, onError)}>
+        <form  autoComplete="off" className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit, onError)}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email" className="sr-only">E-mail</label>
               <input
                 id="email"
                 type="email"
-                autoComplete="off"
+                autoComplete="new-email"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="E-mail"
                 {...register('email')}
@@ -91,7 +96,7 @@ export default function RegisterPrinc() {
               <input
                 id="password"
                 type="password"
-                autoComplete="off"
+                autoComplete="new-password"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Senha"
                 {...register('password')}

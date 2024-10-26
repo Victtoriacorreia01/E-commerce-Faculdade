@@ -1,28 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { getUserProfile } from '../services/userService'; 
+import { getUserProfile } from '../services/userService';
 import { useNavigate } from 'react-router-dom';
+import { Modal, Box, TextField, Button } from '@mui/material';
 import '../styles/MyAccount.css';
-import { FaUserCircle } from 'react-icons/fa'; // Importa um ícone de perfil de usuário
+import { FaUserCircle } from 'react-icons/fa';
+import logo from '../../../assets/logo.png'; // Ajuste o caminho conforme necessário
+
 
 const MyAccount = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [addresses, setAddresses] = useState([]); // Estado para os endereços
+    const [openPersonalModal, setOpenPersonalModal] = useState(false);
+    const [openAddressModal, setOpenAddressModal] = useState(false);
+    const [editedUser, setEditedUser] = useState({});
+    const [address, setAddress] = useState({});
+    const [profileImage, setProfileImage] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const loadUserData = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('authToken');
                 if (!token) {
-                    navigate('/login/login'); // Redireciona se não houver token
+                    navigate('/login/login');
                     return;
                 }
-                const response = await getUserProfile(); // Busca dados do usuário
+                const response = await getUserProfile();
                 setUser(response);
-                setAddresses(response.addresses || []); // Inicializa os endereços
+                setEditedUser(response);
+                setAddress(response.address || {});
             } catch (error) {
-                navigate('/login/login'); // Redireciona para login se houver erro
+                console.log(error);
+                navigate('/login/login');
             } finally {
                 setLoading(false);
             }
@@ -30,106 +39,139 @@ const MyAccount = () => {
         loadUserData();
     }, [navigate]);
 
-    const handleAddAddress = () => {
-        setAddresses([...addresses, { country: '', cityState: '', postalCode: '', taxId: '' }]);
+    const handleChange = (setState) => (field, value) => {
+        setState((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleInputChange = (index, field, value) => {
-        const updatedAddresses = [...addresses];
-        updatedAddresses[index][field] = value;
-        setAddresses(updatedAddresses);
+    const handleSavePersonalInfo = () => {
+        setUser(editedUser);
+        setOpenPersonalModal(false);
+        console.log('Informações pessoais atualizadas:', editedUser);
+    };
+
+    const handleSaveAddress = () => {
+        setUser({ ...user, address });
+        setOpenAddressModal(false);
+        console.log('Endereço atualizado:', address);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        navigate('/login/login');
+    };
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => setProfileImage(reader.result);
+            reader.readAsDataURL(file);
+        }
     };
 
     if (loading) {
-        return <div className="loading">Carregando...</div>; // Mensagem de carregamento
+        return <div className="loading">Carregando...</div>;
     }
 
     return (
         <div className="account-settings">
             <aside className="sidebar">
+                <div className="logo-container">
+                    <img src={logo} alt="Logo" className="sidebar-logo" />
+                </div>
                 <ul>
-                    <li>Minha Conta</li>
-                    <li>Segurança</li>
-                    <li>Cupons</li>
-                    <li>Meus Pedidos</li>
-                    <li>Meus Favoritos</li>
-                    <li className="danger">Sair da conta</li>
+                    <li onClick={() => navigate('/account/account')}>Minha Conta</li>
+                    <li onClick={() => navigate('/order/order')}>Meus Pedidos</li>
+                    <li onClick={() => navigate('/favorite/favorite')}>Meus Favoritos</li>
+                    <li className="danger" onClick={handleLogout}>Sair da conta</li>
                 </ul>
             </aside>
-
             <main className="profile-content">
                 <section className="profile-header">
                     <div className="profile-info">
-                        <FaUserCircle className="profile-pic" size={100} /> {/* Ícone de perfil de usuário */}
+                        {profileImage ? (
+                            <img src={profileImage} alt="Profile" className="profile-pic" />
+                        ) : (
+                            <FaUserCircle className="profile-pic" size={100} />
+                        )}
                         <div>
                             <h2>{user?.name}</h2>
                             <p>{user?.jobTitle}</p>
                             <p>{user?.location}</p>
                         </div>
                     </div>
-                    <button className="edit-button">Edit</button>
+                    <label htmlFor="upload-button" className="edit-button">
+                        Upload Foto
+                    </label>
+                    <input
+                        id="upload-button"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={handleImageUpload}
+                    />
                 </section>
 
-                <section className="personal-info">
-                    <div className="section-header">
-                        <h3>Informações Pessoais</h3>
-                        <button className="edit-button">Edit</button>
-                    </div>
-                    <div className="info-grid">
-                        <div><strong>Primeiro Nome:</strong> {user?.firstName}</div>
-                        <div><strong>Segundo Nome:</strong> {user?.lastName}</div>
-                        <div><strong>Email:</strong> {user?.email}</div>
-                        <div><strong>Telefone:</strong> {user?.phone}</div>
-                        <div><strong>Bio:</strong> {user?.bio}</div>
-                    </div>
-                </section>
+                <div className="section-header">
+                    <h3 className='h3'>Informações Pessoais</h3>
+                    <button className="edit-button" onClick={() => setOpenPersonalModal(true)}>Editar</button>
+                </div>
+                <div className="info-grid">
+                    <div><strong>Primeiro Nome:</strong> {user?.firstName}</div>
+                    <div><strong>Segundo Nome:</strong> {user?.lastName}</div>
+                    <div><strong>Email:</strong> {user?.email}</div>
+                    <div><strong>Telefone:</strong> {user?.phone}</div>
+                    <div><strong>Data de Nascimento:</strong> {user?.birthDate}</div>
+                </div>
 
-                <section className="address-info">
-                    <div className="section-header">
-                        <h3>Endereço</h3>
-                        <button className="edit-button" onClick={handleAddAddress}>Adicionar Endereço</button>
-                    </div>
-                    {addresses && addresses.length > 0 ? (
-                        addresses.map((address, index) => (
-                            <div key={index} className="info-grid">
-                                <div>
-                                    <strong>País:</strong>
-                                    <input
-                                        type="text"
-                                        value={address.country}
-                                        onChange={(e) => handleInputChange(index, 'country', e.target.value)}
-                                    />
-                                </div>
-                                <div>
-                                    <strong>Cidade/Estado:</strong>
-                                    <input
-                                        type="text"
-                                        value={address.cityState}
-                                        onChange={(e) => handleInputChange(index, 'cityState', e.target.value)}
-                                    />
-                                </div>
-                                <div>
-                                    <strong>Código Postal:</strong>
-                                    <input
-                                        type="text"
-                                        value={address.postalCode}
-                                        onChange={(e) => handleInputChange(index, 'postalCode', e.target.value)}
-                                    />
-                                </div>
-                                <div>
-                                    <strong>Detalhes (Tax ID):</strong>
-                                    <input
-                                        type="text"
-                                        value={address.taxId}
-                                        onChange={(e) => handleInputChange(index, 'taxId', e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p>Nenhum endereço adicionado.</p>
-                    )}
-                </section>
+                <div className="section-header">
+                    <h3 className='h3'>Meu Endereço</h3>
+                    <button className="edit-button" onClick={() => setOpenAddressModal(true)}>Editar</button>
+                </div>
+                <div className="info-grid">
+                    <div><strong>Rua:</strong> {address.street}</div>
+                    <div><strong>Número:</strong> {address.number}</div>
+                    <div><strong>Bairro:</strong> {address.neighborhood}</div>
+                    <div><strong>CEP:</strong> {address.cep}</div>
+                    <div><strong>Cidade/Estado:</strong> {address.cityState}</div>
+                    <div><strong>Referência:</strong> {address.reference}</div>
+                </div>
+
+                <Modal open={openPersonalModal} onClose={() => setOpenPersonalModal(false)}>
+                    <Box className="modal-box">
+                        <h2>Editar Informações Pessoais</h2>
+                        <TextField
+                            label="Primeiro Nome"
+                            value={editedUser.firstName || ''}
+                            onChange={(e) => handleChange(setEditedUser)('firstName', e.target.value)}
+                            fullWidth
+                        />
+                        <TextField
+                            label="Email"
+                            value={editedUser.email || ''}
+                            onChange={(e) => handleChange(setEditedUser)('email', e.target.value)}
+                            fullWidth
+                        />
+                        <Button onClick={handleSavePersonalInfo} className="save-button">
+                            Salvar
+                        </Button>
+                    </Box>
+                </Modal>
+
+                <Modal open={openAddressModal} onClose={() => setOpenAddressModal(false)}>
+                    <Box className="modal-box">
+                        <h2>Editar Endereço</h2>
+                        <TextField
+                            label="Rua"
+                            value={address.street || ''}
+                            onChange={(e) => handleChange(setAddress)('street', e.target.value)}
+                            fullWidth
+                        />
+                        <Button onClick={handleSaveAddress} className="save-button">
+                            Salvar
+                        </Button>
+                    </Box>
+                </Modal>
             </main>
         </div>
     );

@@ -3,17 +3,8 @@ import { Link } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.css';
 import useCart from '../../../hooks/use-cart';
 import { getProductsByCategory } from '../services/BeautyService'; 
-import { 
-  addToFavorites, 
-  removeFromFavorites 
-} from '../../favorites/services/FavoriteService'; 
-import { 
-  addToCart, 
-  getCart, 
-  removeFromCart, 
-  decrementQuantity, 
-  clearCart 
-} from '../../cart/services/CartService';
+import { addToFavorites, removeFromFavorites } from '../../favorites/services/FavoriteService'; 
+import { addToCart, getCart, removeFromCart, decrementQuantity, clearCart } from '../../cart/services/CartService';
 
 const Beauty = () => {
   const { addProductIntoCart } = useCart();
@@ -64,21 +55,27 @@ const Beauty = () => {
     }
   };
 
-  const toggleFavorite = async (produtoId) => {
+  const toggleFavorite = async (produto) => {
     try {
-      if (favorites.includes(produtoId)) {
-        await removeFromFavorites(produtoId);
-        setFavorites((prev) => prev.filter((id) => id !== produtoId));
+      const isFavorite = favorites.includes(produto.id);
+  
+      if (isFavorite) {
+        await removeFromFavorites(produto.id);
+        setFavorites((prev) =>
+          prev.filter((id) => id !== produto.id)
+        );
       } else {
-        await addToFavorites(produtoId);
-        setFavorites((prev) => [...prev, produtoId]);
+        await addToFavorites(produto);
+        setFavorites((prev) => [...prev, produto.id]);
       }
-      localStorage.setItem('favorites', JSON.stringify(favorites));
+  
+      // Armazena a lista de favoritos no localStorage
+      localStorage.setItem('favorites', JSON.stringify([...favorites]));
     } catch (error) {
       console.error('Erro ao atualizar favoritos:', error);
     }
   };
-
+  
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
     setFavorites(storedFavorites);
@@ -170,14 +167,14 @@ const Beauty = () => {
                 </Link>
                 <p className="text-gray-600">Preço: R$ {produto.preco.toFixed(2)}</p>
                 <div className="flex items-center mt-2">
+                <button
+                  onClick={() => toggleFavorite(produto)}
+                  className={`ml-3 ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500'}`}
+                >
+                  <i className="fas fa-heart" />
+                </button>
                   <button
-                    onClick={() => toggleFavorite(produto.id)}
-                    className={`ml-3 ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500'}`}
-                  >
-                    <i className="fas fa-heart" />
-                  </button>
-                  <button
-                    onClick={() => handleAddToCart(produto)} // Chama a função para adicionar ao carrinho
+                    onClick={() => handleAddToCart(produto)} 
                     className="text-green-500 hover:text-green-700"
                   >
                     <i className="fas fa-cart-plus" />

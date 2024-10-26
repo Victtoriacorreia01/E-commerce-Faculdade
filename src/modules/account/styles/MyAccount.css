@@ -1,8 +1,9 @@
 /* Layout principal da página */
 .account-settings {
     display: flex;
-    min-height: 100vh;
+    min-height: 120vh;
     background-color: #f8f8f8;
+    margin-top: 10px;
 }
 
 /* Estilização da barra lateral */
@@ -13,9 +14,14 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.sidebar-logo{
+    margin-top: 20px;
+}
+
 .sidebar ul {
     list-style: none;
     padding: 0;
+    margin-top: 70px;
 }
 
 .sidebar ul li {
@@ -92,6 +98,12 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    font-weight: bold;
+    
+}
+
+.h3{
+    color: rgb(232, 0, 104);
 }
 
 .section-header h3 {
@@ -108,4 +120,26 @@
     background-color: #f8f8f8;
     padding: 15px;
     border-radius: 5px;
+}
+
+.modal-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.save-button {
+    background-color: #ce006e; /* Verde */
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+    background-color: #388E3C; /* Verde Escuro */
 }

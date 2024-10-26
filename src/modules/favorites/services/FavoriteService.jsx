@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 export const getFavorites = async () => {
     const token = localStorage.getItem('authToken');
 
@@ -34,7 +33,7 @@ export const addToFavorites = async (produtoId) => {
     }
 
     try {
-        const response = await axios.post(`http://localhost:8080/favorites/add`, {productId: produtoId}, {
+        const response = await axios.post(`http://localhost:8080/favorites/add`, { productId: produtoId }, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -64,7 +63,6 @@ export const removeFromFavorites = async (itemId) => {
         });
 
         console.log(response.data);
-
         return response.data; 
     } catch (error) {
         console.error('Erro ao remover da wishlist:', error.response ? error.response.data : error.message);

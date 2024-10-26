@@ -1,5 +1,4 @@
 import { poster } from '../../../utils/axiosConfig';
-
 export const loginUser = async (data) => {
     try {
         const response = await poster('auth/login', data, {
