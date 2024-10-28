@@ -6,6 +6,10 @@
     margin-top: 10px;
 }
 
+.edit{
+    color: #ce006e;
+}
+
 /* Estilização da barra lateral */
 .sidebar {
     width: 250px;
@@ -134,12 +138,11 @@
     border-radius: 8px;
 }
 
-.save-button {
-    background-color: #ce006e; /* Verde */
-    color: white;
+.savebutton {
+    color: #ce006e; /* Verde */
     transition: background-color 0.3s ease;
 }
 
-.save-button:hover {
-    background-color: #388E3C; /* Verde Escuro */
+.savebutton:hover {
+    color: #388E3C; /* Verde Escuro */
 }

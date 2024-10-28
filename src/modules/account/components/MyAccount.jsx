@@ -6,7 +6,6 @@ import '../styles/MyAccount.css';
 import { FaUserCircle } from 'react-icons/fa';
 import logo from '../../../assets/logo.png'; // Ajuste o caminho conforme necessário
 
-
 const MyAccount = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -139,36 +138,99 @@ const MyAccount = () => {
 
                 <Modal open={openPersonalModal} onClose={() => setOpenPersonalModal(false)}>
                     <Box className="modal-box">
-                        <h2>Editar Informações Pessoais</h2>
+                        <h2 className='edit'>Editar Informações Pessoais</h2>
                         <TextField
                             label="Primeiro Nome"
                             value={editedUser.firstName || ''}
                             onChange={(e) => handleChange(setEditedUser)('firstName', e.target.value)}
                             fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Segundo Nome"
+                            value={editedUser.lastName || ''}
+                            onChange={(e) => handleChange(setEditedUser)('lastName', e.target.value)}
+                            fullWidth
+                            margin="normal"
                         />
                         <TextField
                             label="Email"
                             value={editedUser.email || ''}
                             onChange={(e) => handleChange(setEditedUser)('email', e.target.value)}
                             fullWidth
+                            margin="normal"
                         />
-                        <Button onClick={handleSavePersonalInfo} className="save-button">
-                            Salvar
+                        <TextField
+                            label="Telefone"
+                            value={editedUser.phone || ''}
+                            onChange={(e) => handleChange(setEditedUser)('phone', e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Data de Nascimento"
+                            type="date"
+                            value={editedUser.birthDate || ''}
+                            onChange={(e) => handleChange(setEditedUser)('birthDate', e.target.value)}
+                            fullWidth
+                            margin="normal"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                        <Button onClick={handleSavePersonalInfo} >
+                        <h1 className='savebutton'>Salvar</h1>
                         </Button>
                     </Box>
                 </Modal>
 
                 <Modal open={openAddressModal} onClose={() => setOpenAddressModal(false)}>
                     <Box className="modal-box">
-                        <h2>Editar Endereço</h2>
+                        <h2 className='edit'>Editar Endereço</h2>
                         <TextField
                             label="Rua"
                             value={address.street || ''}
                             onChange={(e) => handleChange(setAddress)('street', e.target.value)}
                             fullWidth
+                            margin="normal"
                         />
-                        <Button onClick={handleSaveAddress} className="save-button">
-                            Salvar
+                        <TextField
+                            label="Número"
+                            value={address.number || ''}
+                            onChange={(e) => handleChange(setAddress)('number', e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Bairro"
+                            value={address.neighborhood || ''}
+                            onChange={(e) => handleChange(setAddress)('neighborhood', e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="CEP"
+                            value={address.cep || ''}
+                            onChange={(e) => handleChange(setAddress)('cep', e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Cidade/Estado"
+                            value={address.cityState || ''}
+                            onChange={(e) => handleChange(setAddress)('cityState', e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Referência"
+                            value={address.reference || ''}
+                            onChange={(e) => handleChange(setAddress)('reference', e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <Button onClick={handleSaveAddress}  >
+                            <h1 className='savebutton'>Salvar</h1>
                         </Button>
                     </Box>
                 </Modal>
