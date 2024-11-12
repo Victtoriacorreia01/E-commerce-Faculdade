@@ -32,9 +32,9 @@ const Beauty = () => {
         await removeFromFavorites(produto.id);
         setFavorites((prev) => prev.filter((id) => id !== produto.id));
       } else {
-        await addToFavorites(produto);
+        await addToFavorites(produto.id);
         setFavorites((prev) => [...prev, produto.id]);
-        navigate('/favorites');
+        navigate('/favorite/favorite');
       }
     } catch (error) {
       console.error('Erro ao atualizar favoritos:', error);

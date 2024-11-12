@@ -39,6 +39,9 @@ export const addToFavorites = async (produtoId) => {
                 'Content-Type': 'application/json'
             },
         });
+
+        console.log(response.data);
+
         return response.data;
     } catch (error) {
         console.error('Erro ao adicionar aos favoritos:', error);

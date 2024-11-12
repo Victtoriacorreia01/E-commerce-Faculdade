@@ -10,11 +10,18 @@ const axiosInstance = axios.create({
 });
 
 
-// Função para GET requests
 export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
     try {
         const [url, config] = Array.isArray(args) ? args : [args];
-        const response = await axiosInstance.get(url, { ...config });
+
+        // Adicione o token JWT aos cabeçalhos
+        const token = localStorage.getItem('authToken'); // Supondo que o token esteja armazenado no localStorage
+        const headers = {
+            ...config?.headers,
+            Authorization: token ? `Bearer ${token}` : undefined,
+        };
+
+        const response = await axiosInstance.get(url, { ...config, headers });
         return response.data; // Retorna apenas os dados da resposta
     } catch (error) {
         console.error('Erro no fetcher (GET):', error);

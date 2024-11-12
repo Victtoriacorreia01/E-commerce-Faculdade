@@ -4,9 +4,21 @@ const CART_URL = 'cart';
 
 export const addToCart = async (productId) => {
   try {
-    const data = { productId };
-    const response = await poster(`${CART_URL}/add`, data);
-    console.log('Produto adicionado ao carrinho:', response);
+    const token = localStorage.getItem('authToken');
+
+    console.log("Token recuperado: ", token);
+
+    const response = await poster(`${CART_URL}/add`, {productId : productId}, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (response.value == 200){
+      console.log(response.message);
+    }
+
     return response;
   } catch (error) {
     console.error('Erro ao adicionar produto:', error);
@@ -17,8 +29,17 @@ export const addToCart = async (productId) => {
 
 export const getCart = async () => {
   try {
-    const cart = await fetcher(CART_URL);
+    const token = localStorage.getItem('authToken');
+
+    const cart = await fetcher(CART_URL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
     console.log('Carrinho:', cart);
+
     return cart;
   } catch (error) {
     console.error('Erro ao obter o carrinho:', error);

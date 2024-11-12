@@ -13,9 +13,10 @@ export const loginUser = async (data) => {
         }
 
         localStorage.setItem('authToken', token);
-        console.log('Token armazenado no localStorage:', localStorage.getItem('authToken', token));
+
+        console.log('Token armazenado no localStorage: ', localStorage.getItem('authToken', token));
         
-        return token; 
+        return token;
     } catch (error) {
         console.error('Erro ao logar o usuário:', error);
         throw error; 
