@@ -1,0 +1,94 @@
+.div{
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+.container {
+    
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+  
+  .h1{
+    color: #333;
+    
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+  
+  .form {
+    
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .inputGroup {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .inputGroup label {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+  }
+  
+  .inputGroup input,
+  .inputGroup textarea {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: border-color 0.3s;
+  }
+  
+  .inputGroup input:focus,
+  .inputGroup textarea:focus {
+    border-color: #4CAF50; /* Verde para foco */
+    outline: none;
+  }
+  
+  .error {
+    color: #e74c3c; /* Vermelho para erros */
+    font-size: 0.8rem;
+    margin-top: 5px;
+  }
+  
+  .checkboxGroup {
+    display: flex;
+    align-items: center;
+  }
+  
+  .checkboxGroup label {
+    margin-left: 5px;
+    font-size: 0.9rem;
+  }
+  
+  .continueButton {
+    background-color: #4CAF50;
+    color: #fff;
+    max-width: 100px;
+    padding: 12px;
+    border: none;
+    margin-left: 300px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+  }
+  
+  .continueButton:hover {
+    background-color: #d6004b; 
+  }
+  

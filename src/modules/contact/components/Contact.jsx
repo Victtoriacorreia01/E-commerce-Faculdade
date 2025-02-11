@@ -4,7 +4,28 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import Logo from "../../../assets/logo.png";
+import { sendContactMessage } from '../../contact/services/ContactService';
+const onSubmit = async (data) => {
+    setLoading(true);
+    setError(null);
 
+    try {
+        await sendContactMessage(data); // Chama o serviço
+        console.log('Dados do contato enviados:', data);
+        setLoading(false);
+        setSuccess(true);
+        reset();
+
+        setTimeout(() => {
+            navigate('/'); 
+        }, 2000); 
+
+    } catch (error) {
+        console.error('Erro ao enviar o contato:', error);
+        setLoading(false);
+        setError(error.message || 'Falha ao enviar a mensagem. Tente novamente.');
+    }
+};
 const contactFormSchema = z.object({
     name: z.string().min(1, 'O nome é obrigatório.'),
     email: z.string().min(1, 'O e-mail é obrigatório.').email('Informe um endereço de e-mail válido.'),

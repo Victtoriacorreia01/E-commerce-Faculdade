@@ -206,17 +206,22 @@
   position: relative;
 }
 
-.cartItemCount {
+.cartItemsCount {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: red;
+  top: -10px; /* Ajuste conforme necessário */
+  right: -10px; /* Ajuste conforme necessário */
+  background-color: #ff4081;
   color: white;
+  font-size: 0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
-  padding: 4px 8px;
-  font-size: 12px;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+
 
 @keyframes pulse {
   0%, 100% {

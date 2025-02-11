@@ -6,13 +6,20 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
     // Inicializa o carrinho a partir do localStorage
-    return JSON.parse(localStorage.getItem('cart')) || [];
+    try {
+      return JSON.parse(localStorage.getItem('cart')) || [];
+    } catch {
+      return [];
+    }
   });
 
   useEffect(() => {
     // Atualiza o localStorage sempre que o carrinho mudar
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
+
+  // Cálculo do total de itens no carrinho
+  const totalItems = cart.reduce((total, item) => total + (item.quantidade || 1), 0);
 
   const addProductIntoCart = (product) => {
     setCart((prevCart) => {
@@ -41,15 +48,27 @@ export const CartProvider = ({ children }) => {
 
   const productCartDecrement = (id) => {
     setCart((prevCart) =>
-      prevCart.map(item =>
-        item.id === id && item.quantidade > 1 ? { ...item, quantidade: item.quantidade - 1 } : item
-        // Não faz nada se a quantidade for 1 ou menos
-      )
+      prevCart
+        .map(item =>
+          item.id === id && item.quantidade > 1
+            ? { ...item, quantidade: item.quantidade - 1 }
+            : item
+        )
+        .filter(item => item.quantidade > 0) // Remove o item se a quantidade for 0
     );
   };
 
   return (
-    <CartContext.Provider value={{ cart, addProductIntoCart, removeProductFromCart, productCartIncrement, productCartDecrement }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        totalItems, // Disponível no contexto
+        addProductIntoCart,
+        removeProductFromCart,
+        productCartIncrement,
+        productCartDecrement,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

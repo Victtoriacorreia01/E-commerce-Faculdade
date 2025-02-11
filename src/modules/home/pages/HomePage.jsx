@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
 import fotoprincipal from '../../../assets/baixados (55).jpg'; 
-import imgMeninoNegro from '../../../assets/meninonegro.jpg';
 import imgMulherSport from '../../../assets/mulhersport.jpg';
 import imgHomemBranco from '../../../assets/homembranco.jpg';
+import imgWomandress from '../../../assets/mulherbranco.jpg'
 import imgSportWoman from '../../../assets/sportwoman.jpg';
 import imgTshirtButton from '../../../assets/tshirtbutton.jpg';
 import imgVans from '../../../assets/vans.jpg';
@@ -25,9 +25,9 @@ import 'animate.css';
 
 
 const saleItems = [
-  { id: 1, link: '/man/men', img: imgMeninoNegro, subtitle: 'men', title: 'sale 40% off' },
-  { id: 2, link: '/sport/sport', img: imgMulherSport, subtitle: 'sport', title: 'sale 25% off' },
-  { id: 3, link: '/fem/female', img: imgHomemBranco, subtitle: 'men', title: 'sale 20% off' },
+  { id: 1, link: '/man/men', img: imgHomemBranco, subtitle: 'Men', title: 'sale 40% off' },
+  { id: 3, link: '/fem/female', img: imgWomandress, subtitle: 'Woman', title: 'sale 20% off' },
+  { id: 2, link: '/sport/sport', img: imgMulherSport, subtitle: 'Sport', title: 'sale 25% off' }
 ];
 
 const mustHaveItems = [
@@ -46,9 +46,9 @@ const mustHaveItems = [
 ];
 
 const reviews = [
-  { id: 1, name: 'Lara Silva', text: 'lorem lorem lorem.', rating: 5 },
-  { id: 2, name: 'André Oliveira', text: 'lorem lorem lorem.', rating: 4 },
-  { id: 3, name: 'Alice Lourem', text: 'lorem lorem lorem.', rating: 4 },
+  { id: 1, name: 'Lara Silva', text: 'Simplemente incrível todas as peças que comprei!', rating: 5 },
+  { id: 2, name: 'André Oliveira', text: 'É a segunda compra que faço para minha filha e as peças são de ótima qualidade!', rating: 4 },
+  { id: 3, name: 'Alice Lourem', text: 'Atendimento Online perfeito e peças de ótima qualidade!', rating: 4 },
 ];
 
 const blogPosts = [
@@ -135,12 +135,18 @@ export default function Home() {
                 <div className="bg-gray-100 p-6 rounded-lg shadow-md">
                   <h3 className="text-lg font-semibold text-black">{review.name}</h3>
                   <div className="flex items-center mt-2">
-                    {[...Array(review.rating)].map((_, index) => (
-                      <svg key={index} xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                      </svg>
-                    ))}
-                  </div>
+                      {[...Array(review.rating)].map((_, index) => (
+                        <svg
+                          key={index}
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-yellow-500"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                      ))}
+                    </div>
                   <p className="text-gray-700 mt-2">{review.text}</p>
                 </div>
               </div>

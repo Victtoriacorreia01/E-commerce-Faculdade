@@ -1,4 +1,4 @@
-/* Layout principal da página */
+
 .account-settings {
     display: flex;
     min-height: 120vh;
@@ -10,7 +10,6 @@
     color: #ce006e;
 }
 
-/* Estilização da barra lateral */
 .sidebar {
     width: 250px;
     background-color: white;
@@ -39,7 +38,7 @@
     color: red;
 }
 
-/* Seção principal */
+
 .profile-content {
     flex-grow: 1;
     padding: 40px;
@@ -48,7 +47,7 @@
     border-radius: 10px;
 }
 
-/* Cabeçalho do perfil */
+
 .profile-header {
     display: flex;
     justify-content: space-between;
@@ -78,7 +77,7 @@
     margin: 4px 0;
 }
 
-/* Estilização dos botões de editar */
+
 .edit-button {
     background-color: #f0f0f0;
     color: #333;
@@ -92,7 +91,7 @@
     background-color: #ddd;
 }
 
-/* Seções de informações pessoais e endereço */
+
 .personal-info, .address-info {
     margin-bottom: 40px;
 }
@@ -139,10 +138,10 @@
 }
 
 .savebutton {
-    color: #ce006e; /* Verde */
+    color: #ce006e; 
     transition: background-color 0.3s ease;
 }
 
 .savebutton:hover {
-    color: #388E3C; /* Verde Escuro */
+    color: #388E3C; 
 }

@@ -1,107 +1,132 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import vestido from '../../../assets/estido.jpg';
-import salto from '../../../assets/saltoo.jpg';
-import colar from '../../../assets/colarver.jpg';
-import calca from '../../../assets/calcafem.jpg';
-import oculos from '../../../assets/oculoss.jpg';
-import saia from '../../../assets/saiafem.jpg';
-import chapeu from '../../../assets/chapeu.jpg';
-import blusamanga from '../../../assets/blusabranca.jpg';
-import papete from '../../../assets/papetee.jpg';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.css';
 import useCart from '../../../hooks/use-cart';
-import { useState } from 'react';
+import { getProductsByCategory } from '../services/FemaleService'; // Importe o serviço correto
+import { addToFavorites, removeFromFavorites } from '../../favorites/services/FavoriteService';
+import { addToCart, getCart } from '../../cart/services/CartService';
 
 const Female = () => {
+  const navigate = useNavigate();
   const { addProductIntoCart } = useCart();
+  const [cart, setCart] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [selectedBrands, setSelectedBrands] = useState([]);
-  const [selectedStyles, setSelectedStyles] = useState([]);
   const [maxPrice, setMaxPrice] = useState(1000);
   const [sortOption, setSortOption] = useState('relevancy');
+  const [produtos, setProdutos] = useState([]);
 
-  const produtos = [
-    { id: 1, nome: "Vestido Floral", preco: 299.99, imagem: vestido },
-    { id: 2, nome: "Salto Formal", preco: 109.99, imagem: salto },
-    { id: 3, nome: "Colar Prata 925", preco: 89.99, imagem: colar },
-    { id: 4, nome: "Calça Alfaiataria", preco: 99.99, imagem: calca },
-    { id: 5, nome: "Óculos", preco: 108.99, imagem: oculos },
-    { id: 6, nome: "Saia Off White", preco: 89.99, imagem: saia },
-    { id: 7, nome: "Chapéu Azul", preco: 39.99, imagem: chapeu },
-    { id: 8, nome: "Blusa com Manga", preco: 59.99, imagem: blusamanga },
-    { id: 9, nome: "Papete Preta Brilhosa", preco: 75.99, imagem: papete },
-  ];
-
-  const toggleFavorite = (produtoId) => {
-    setFavorites(prevFavorites =>
-      prevFavorites.includes(produtoId)
-        ? prevFavorites.filter(id => id !== produtoId)
-        : [...prevFavorites, produtoId]
-    );
+  const handleAddToCart = async (product) => {
+    try {
+      await addToCart(product.id); // Produto adicionado via serviço
+      await fetchCart(); // Atualiza o estado do carrinho local
+    } catch (error) {
+      console.error('Erro ao adicionar ao carrinho:', error);
+    }
   };
 
-  const handleFilterChange = (setter) => (item) => {
-    setter(prev => 
-      prev.includes(item)
-        ? prev.filter(i => i !== item)
-        : [...prev, item]
-    );
+  const toggleFavorite = async (produto) => {
+    try {
+      const isFavorite = favorites.includes(produto.id);
+  
+      if (isFavorite) {
+        // Remove dos favoritos
+        await removeFromFavorites(produto.id);
+        setFavorites((prev) => {
+          const updatedFavorites = prev.filter((id) => id !== produto.id);
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Sincroniza com localStorage
+          return updatedFavorites;
+        });
+      } else {
+        // Adiciona aos favoritos
+        await addToFavorites(produto.id);
+        setFavorites((prev) => {
+          const updatedFavorites = [...prev, produto.id];
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Sincroniza com localStorage
+          return updatedFavorites;
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar favoritos:', error);
+    }
   };
+
+  useEffect(() => {
+    const loadCart = async () => {
+      await fetchCart();
+    };
+
+    loadCart();
+  }, []);
+
+  const fetchCart = async () => {
+    try {
+      const cartData = await getCart(); // Chamada da API
+      console.log('Dados do carrinho:', cartData);
+      setCart(cartData.items || []); // Atualiza estado local
+    } catch (error) {
+      console.error('Erro ao buscar o carrinho:', error);
+    }
+  };
+
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    setFavorites(storedFavorites);
+  }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProductsByCategory(); // Função que deve retornar os produtos da categoria feminina
+        setProdutos(
+          data.map((produto) => ({
+            id: produto.id,
+            nome: produto.name,
+            preco: produto.price,
+            imagem: `http://localhost:8080/${produto.imageUrl}`, // Adapte a URL da imagem conforme necessário
+          }))
+        );
+      } catch (error) {
+        console.error('Erro ao buscar produtos:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const sortedProducts = [...produtos].sort((a, b) => {
-    switch (sortOption) {
-      case 'price_asc':
-        return a.preco - b.preco;
-      case 'price_desc':
-        return b.preco - a.preco;
-      default:
-        return 0; // 'relevancy' ou outra opção
-    }
+    if (sortOption === 'price_asc') return a.preco - b.preco;
+    if (sortOption === 'price_desc') return b.preco - a.preco;
+    return 0;
   });
 
-  const filteredProducts = sortedProducts.filter(produto => (
-    (selectedBrands.length === 0 || selectedBrands.includes(produto.marca)) &&
-    (selectedStyles.length === 0 || selectedStyles.includes(produto.estilo)) &&
-    produto.preco <= maxPrice
-  ));
-
-  const renderStars = (rating) => (
-    Array.from({ length: 5 }, (_, i) => (
-      <i key={i} className={`fas fa-star ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`} />
-    ))
+  const filteredProducts = sortedProducts.filter(
+    (produto) => produto.preco <= maxPrice
   );
+
+  const renderStars = (rating) =>
+    Array.from({ length: 5 }).map((_, i) => (
+      <i
+        key={i}
+        className={`fas fa-star ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+      />
+    ));
 
   return (
     <div className="container mx-auto mt-20 mb-10">
       <div className="grid grid-cols-4 gap-4">
         <div className="col-span-1 bg-white p-4 shadow-lg rounded-lg">
-          <h1 className="text-lg font-bold mb-2">Ordenar Por</h1>
+          <h1 className="text-lg font-bold mb-2 text-black">Ordenar Por</h1>
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="block w-full border border-gray-300 rounded"
+            className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-3 py-2 rounded shadow text-sm"
           >
             <option value="relevancy">Mais relevantes</option>
             <option value="price_asc">Preço - Baixo para Alto</option>
             <option value="price_desc">Preço - Alto para Baixo</option>
           </select>
+
           <h2 className="text-xl font-bold text-gray-800 my-4">Filtros</h2>
-
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Marcas</h3>
-            <div className="flex flex-wrap gap-2">
-              {['Nike', 'Ralph Lauren', 'Blueendbarry', 'Calvinklein', 'Schutz', 'Dior', 'Chanel', 'Jonh John', 'swarovski', 'Rolex', 'Forever21', 'Diesel'].map(marca => (
-                <button
-                  key={marca}
-                  className={`py-1 px-3 border rounded-full text-xs ${selectedBrands.includes(marca) ? 'bg-gray-200' : 'text-gray-700 hover:bg-gray-200'}`}
-                  onClick={() => handleFilterChange(setSelectedBrands)(marca)}
-                >
-                  {marca}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-gray-700 mb-2">Preços</h3>
             <input
@@ -114,56 +139,45 @@ const Female = () => {
             />
             <p className="text-gray-600 mt-1">Até R$ {maxPrice}</p>
           </div>
-
-          <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Estilos</h3>
-            <div className="flex flex-wrap gap-2">
-              {['Calçados', 'Vestidos', 'Saias', 'Chapéus', 'Calças', 'Acessórios', 'Joias'].map(estilo => (
-                <button
-                  key={estilo}
-                  className={`py-1 px-3 border rounded-full text-xs ${selectedStyles.includes(estilo) ? 'bg-gray-200' : 'text-gray-600 hover:bg-gray-200'}`}
-                  onClick={() => handleFilterChange(setSelectedStyles)(estilo)}
-                >
-                  {estilo}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div className="col-span-3 grid grid-cols-1 md:grid-cols-4 gap-4">
-          {filteredProducts.map(produto => (
-            <div key={produto.id} className="bg-white p-2 shadow-md rounded-lg">
-              <Link to={`/produto/${produto.id}`}>
-                <div className="w-full h-40 relative overflow-hidden">
-                <img
-                  src={produto.imagem}
-                  alt={produto.nome}
-                  className="object-contain w-full h-full"
-                />                
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((produto) => (
+              <div key={produto.id} className="bg-white p-2 shadow-md rounded-lg">
+                <div className="w-full h-40 overflow-hidden">
+                  <img
+                    src={produto.imagem}
+                    alt={produto.nome}
+                    className="w-full h-full object-contain rounded-lg"
+                  />
                 </div>
-              </Link>
-              <h2 className="text-lg font-semibold mt-2">{produto.nome}</h2>
-              <p className="text-gray-600">Preço: R$ {produto.preco.toFixed(2)}</p>
-              <div className="flex items-center mt-2">
-                <button
-                  className={`ml-3 mr-3 ${favorites.includes(produto.id) ? 'text-red-500' : 'text-red-500 hover:text-red-800'}`}
-                  onClick={() => toggleFavorite(produto.id)}
-                >
-                  <i className="fas fa-heart"></i>
-                </button>
-                <button
-                  className="text-green-500 hover:text-green-700"
-                  onClick={() => addProductIntoCart(produto)}
-                >
-                  <i className="fas fa-cart-plus"></i>
-                </button>
+                <Link to={`/products/details/${produto.id}`}>
+                  <span className="text-lg font-semibold mt-2 block">{produto.nome}</span>
+                </Link>
+                <p className="text-gray-600">Preço: R$ {produto.preco.toFixed(2)}</p>
+                <div className="flex items-center mt-2">
+                  <button
+                    onClick={() => toggleFavorite(produto)}
+                    className={`ml-3 ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500'}`}
+                  >
+                    <i className="fas fa-heart" />
+                  </button>
+                  <button
+                    onClick={() => handleAddToCart(produto)}
+                    className="text-green-500 hover:text-green-700"
+                  >
+                    <i className="fas fa-cart-plus" />
+                  </button>
+                </div>
+                <div className="flex items-center mt-2">
+                  {renderStars(4)}
+                </div>
               </div>
-              <div className="flex items-center mt-2">
-                {renderStars(produto.rating)}
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-gray-600">Nenhum produto encontrado.</p>
+          )}
         </div>
       </div>
     </div>

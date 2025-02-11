@@ -14,56 +14,88 @@ const Beauty = () => {
   const [maxPrice, setMaxPrice] = useState(1000);
   const [sortOption, setSortOption] = useState('relevancy');
   const [produtos, setProdutos] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
 
+  // Atualiza contagem do carrinho
+  const updateCartCount = async () => {
+    try {
+      const cartData = await getCart();
+      const totalItems = cartData.items.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(totalItems);
+    } catch (error) {
+      console.error('Erro ao atualizar contagem do carrinho:', error);
+    }
+  };
+
+  useEffect(() => {
+    updateCartCount(); // Atualiza a contagem no carregamento inicial
+  }, []);
+  
+  // Adiciona produto ao carrinho
   const handleAddToCart = async (product) => {
     try {
-      await addToCart(product.id); // Produto adicionado via serviço
-      await fetchCart(); // Atualiza o estado do carrinho local
+      await addToCart(product.id); 
+      await updateCartCount(); // Atualiza a contagem
+      navigate('/cart/cart'); 
     } catch (error) {
       console.error('Erro ao adicionar ao carrinho:', error);
     }
   };
 
+  // Adiciona ou remove favoritos
   const toggleFavorite = async (produto) => {
     try {
       const isFavorite = favorites.includes(produto.id);
-
+  
       if (isFavorite) {
+        // Remove dos favoritos
         await removeFromFavorites(produto.id);
-        setFavorites((prev) => prev.filter((id) => id !== produto.id));
+        setFavorites((prev) => {
+          const updatedFavorites = prev.filter((id) => id !== produto.id);
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Sincroniza com localStorage
+          return updatedFavorites;
+        });
       } else {
+        // Adiciona aos favoritos
         await addToFavorites(produto.id);
-        setFavorites((prev) => [...prev, produto.id]);
-        navigate('/favorite/favorite');
+        setFavorites((prev) => {
+          const updatedFavorites = [...prev, produto.id];
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Sincroniza com localStorage
+          return updatedFavorites;
+        });
       }
     } catch (error) {
       console.error('Erro ao atualizar favoritos:', error);
     }
   };
 
+  // Sincroniza favoritos ao detectar alterações no localStorage
   useEffect(() => {
-    const loadCart = async () => {
-      await fetchCart();
+    const handleFavoriteChange = () => {
+      const favoriteChange = JSON.parse(localStorage.getItem('favoriteChanged'));
+      
+      if (favoriteChange?.action === 'removed') {
+        const { productId } = favoriteChange;
+
+        // Atualizar o estado para remover apenas o produto correspondente
+        setFavorites((prevFavorites) => prevFavorites.filter((id) => id !== productId));
+      }
     };
-    
-    loadCart();
+
+    window.addEventListener('storage', handleFavoriteChange);
+
+    return () => {
+      window.removeEventListener('storage', handleFavoriteChange);
+    };
   }, []);
 
-  const fetchCart = async () => {
-    try {
-      const cartData = await getCart(); // Chamada da API
-      console.log('Dados do carrinho:', cartData);
-      setCart(cartData.items || []); // Atualiza estado local
-    } catch (error) {
-      console.error('Erro ao buscar o carrinho:', error);
-    }
-  };
-
+  // Carrega os favoritos salvos no localStorage
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
     setFavorites(storedFavorites);
   }, []);
 
+  // Busca produtos da categoria
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -155,7 +187,9 @@ const Beauty = () => {
                     <i className="fas fa-heart" />
                   </button>
                   <button
-                    onClick={() => handleAddToCart(produto)}
+                    onClick={async () => {
+                      await handleAddToCart(produto);
+                    }}
                     className="text-green-500 hover:text-green-700"
                   >
                     <i className="fas fa-cart-plus" />

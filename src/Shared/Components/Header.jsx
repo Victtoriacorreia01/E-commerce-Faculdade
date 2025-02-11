@@ -5,6 +5,7 @@ import styles from '../../Shared/Styles/Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import useCart from '../../../src/hooks/use-cart';
 import { useAuth } from '../../../src/AuthContext';
+import { getCartItemCount } from '../../modules/cart/services/CartService'; // Verifique o caminho correto
 
 export default function Header() {
   const navigate = useNavigate();
@@ -13,12 +14,30 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [cartItemsCount, setCartItemsCount] = useState(cart.length);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
-
+  const [cartItemCount, setCartItemCount] = useState(0);
   useEffect(() => {
-    setCartItemsCount(cart.length);
+    const fetchCartCount = async () => {
+      try {
+        const count = await getCartItemCount();
+        setCartItemCount(count);
+      } catch (error) {
+        console.error("Erro ao obter a contagem de itens do carrinho:", error);
+      }
+    };
+  
+    fetchCartCount();
+  }, [cart]); // Atualiza quando o estado do carrinho muda
+
+  
+  
+  
+  useEffect(() => {
+    console.log("Carrinho atualizado:", cart);
+    const totalItems = cart.reduce((acc, item) => acc + (item.quantidade || 1), 0);
+    setCartItemsCount(totalItems);
   }, [cart]);
   
-  
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -58,6 +77,7 @@ export default function Header() {
     console.log("Redirecionando para a homepage..."); 
     navigate('/', { replace: true }); 
 };
+
 
 
   return (
@@ -149,10 +169,8 @@ export default function Header() {
                 />
                 <Link to="/cart/cart" className={styles.cartIconContainer}>
                   <FaShoppingCart className={styles.iconWhite} />
-                  {cartItemsCount > 0 && (
-                    <span className={`${styles.cartItemsCount} bg-pink-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs absolute -top-0 -right-4`}>
-                      {cartItemsCount}
-                    </span>
+                  {cartItemCount > 0 && (
+                    <span className={styles.cartItemsCount}>{cartItemCount}</span>
                   )}
                 </Link>
               </div>

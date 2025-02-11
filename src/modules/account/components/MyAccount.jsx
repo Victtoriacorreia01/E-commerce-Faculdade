@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { getUserProfile } from '../services/userService';
+import { getUserProfile, updateUserProfile, updateUserAddress } from '../services/userService';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Box, TextField, Button } from '@mui/material';
 import '../styles/MyAccount.css';
 import { FaUserCircle } from 'react-icons/fa';
-import logo from '../../../assets/logo.png'; // Ajuste o caminho conforme necessário
+import logo from '../../../assets/logo.png'; 
 
 const MyAccount = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [openPersonalModal, setOpenPersonalModal] = useState(false);
     const [openAddressModal, setOpenAddressModal] = useState(false);
-    const [editedUser, setEditedUser] = useState({});
+    const [editedUser, setEditedUser] = useState({ telephone: '', email: '', birthdate: '' });
     const [address, setAddress] = useState({});
     const [profileImage, setProfileImage] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+            setEditedUser(JSON.parse(userData));
+        } else {
+            loadUserData();
+        }
+    }, []);
 
     useEffect(() => {
         const loadUserData = async () => {
@@ -26,10 +36,11 @@ const MyAccount = () => {
                 }
                 const response = await getUserProfile();
                 setUser(response);
-                setEditedUser(response);
+                setEditedUser(response);  
                 setAddress(response.address || {});
+                localStorage.setItem('user', JSON.stringify(response)); 
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 navigate('/login/login');
             } finally {
                 setLoading(false);
@@ -39,19 +50,33 @@ const MyAccount = () => {
     }, [navigate]);
 
     const handleChange = (setState) => (field, value) => {
-        setState((prev) => ({ ...prev, [field]: value }));
+        setState((prev) => {
+            const updatedState = { ...prev, [field]: value };
+            return updatedState;
+        });
     };
 
-    const handleSavePersonalInfo = () => {
-        setUser(editedUser);
-        setOpenPersonalModal(false);
-        console.log('Informações pessoais atualizadas:', editedUser);
+    const handleSavePersonalInfo = async () => {
+        try {
+            await updateUserProfile(editedUser);
+            const updatedUser = await getUserProfile();  
+            setEditedUser(updatedUser);  
+            setOpenPersonalModal(false);
+        } catch (error) {
+            console.error('Erro ao atualizar informações pessoais:', error);
+        }
     };
 
-    const handleSaveAddress = () => {
-        setUser({ ...user, address });
-        setOpenAddressModal(false);
-        console.log('Endereço atualizado:', address);
+    const handleSaveAddress = async () => {
+        try {
+            await updateUserAddress(address);
+            const updatedUser = await getUserProfile();  
+            setUser(updatedUser);
+            setAddress(updatedUser.address || {});
+            setOpenAddressModal(false);
+        } catch (error) {
+            console.error('Erro ao atualizar endereço:', error);
+        }
     };
 
     const handleLogout = () => {
@@ -112,81 +137,58 @@ const MyAccount = () => {
                 </section>
 
                 <div className="section-header">
-                    <h3 className='h3'>Informações Pessoais</h3>
+                    <h3 className="h3">Informações Pessoais</h3>
                     <button className="edit-button" onClick={() => setOpenPersonalModal(true)}>Editar</button>
                 </div>
                 <div className="info-grid">
-                    <div><strong>Primeiro Nome:</strong> {user?.firstName}</div>
-                    <div><strong>Segundo Nome:</strong> {user?.lastName}</div>
                     <div><strong>Email:</strong> {user?.email}</div>
-                    <div><strong>Telefone:</strong> {user?.phone}</div>
-                    <div><strong>Data de Nascimento:</strong> {user?.birthDate}</div>
+                    <div><strong>Telefone:</strong> {user?.telephone}</div>
+                    <div><strong>Data de Nascimento:</strong> {user?.birthdate}</div>
                 </div>
 
                 <div className="section-header">
-                    <h3 className='h3'>Meu Endereço</h3>
+                    <h3 className="h3">Meu Endereço</h3>
                     <button className="edit-button" onClick={() => setOpenAddressModal(true)}>Editar</button>
                 </div>
                 <div className="info-grid">
                     <div><strong>Rua:</strong> {address.street}</div>
                     <div><strong>Número:</strong> {address.number}</div>
-                    <div><strong>Bairro:</strong> {address.neighborhood}</div>
+                    <div><strong>Bairro:</strong> {address.district}</div>
                     <div><strong>CEP:</strong> {address.cep}</div>
-                    <div><strong>Cidade/Estado:</strong> {address.cityState}</div>
+                    <div><strong>Cidade/Estado:</strong> {address.city}</div>
                     <div><strong>Referência:</strong> {address.reference}</div>
                 </div>
 
                 <Modal open={openPersonalModal} onClose={() => setOpenPersonalModal(false)}>
                     <Box className="modal-box">
-                        <h2 className='edit'>Editar Informações Pessoais</h2>
+                        <h2 className="edit">Editar Informações Pessoais</h2>
                         <TextField
-                            label="Primeiro Nome"
-                            value={editedUser.firstName || ''}
-                            onChange={(e) => handleChange(setEditedUser)('firstName', e.target.value)}
-                            fullWidth
-                            margin="normal"
-                        />
-                        <TextField
-                            label="Segundo Nome"
-                            value={editedUser.lastName || ''}
-                            onChange={(e) => handleChange(setEditedUser)('lastName', e.target.value)}
-                            fullWidth
-                            margin="normal"
-                        />
-                        <TextField
-                            label="Email"
-                            value={editedUser.email || ''}
-                            onChange={(e) => handleChange(setEditedUser)('email', e.target.value)}
+                            label="Data de Nascimento"
+                            value={editedUser.birthdate || ''}  
+                            onChange={(e) => handleChange(setEditedUser)('birthdate', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
                             label="Telefone"
-                            value={editedUser.phone || ''}
-                            onChange={(e) => handleChange(setEditedUser)('phone', e.target.value)}
+                            value={editedUser.telephone || ''}
+                            onChange={(e) => handleChange(setEditedUser)('telephone', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
-                        <TextField
-                            label="Data de Nascimento"
-                            type="date"
-                            value={editedUser.birthDate || ''}
-                            onChange={(e) => handleChange(setEditedUser)('birthDate', e.target.value)}
-                            fullWidth
-                            margin="normal"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                        <Button onClick={handleSavePersonalInfo} >
-                        <h1 className='savebutton'>Salvar</h1>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSavePersonalInfo}
+                        >
+                            Salvar
                         </Button>
                     </Box>
                 </Modal>
 
                 <Modal open={openAddressModal} onClose={() => setOpenAddressModal(false)}>
                     <Box className="modal-box">
-                        <h2 className='edit'>Editar Endereço</h2>
+                        <h2 className="edit">Editar Endereço</h2>
                         <TextField
                             label="Rua"
                             value={address.street || ''}
@@ -203,8 +205,8 @@ const MyAccount = () => {
                         />
                         <TextField
                             label="Bairro"
-                            value={address.neighborhood || ''}
-                            onChange={(e) => handleChange(setAddress)('neighborhood', e.target.value)}
+                            value={address.district || ''}
+                            onChange={(e) => handleChange(setAddress)('district', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
@@ -217,8 +219,8 @@ const MyAccount = () => {
                         />
                         <TextField
                             label="Cidade/Estado"
-                            value={address.cityState || ''}
-                            onChange={(e) => handleChange(setAddress)('cityState', e.target.value)}
+                            value={address.city || ''}
+                            onChange={(e) => handleChange(setAddress)('city', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
@@ -229,8 +231,12 @@ const MyAccount = () => {
                             fullWidth
                             margin="normal"
                         />
-                        <Button onClick={handleSaveAddress}  >
-                            <h1 className='savebutton'>Salvar</h1>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSaveAddress}
+                        >
+                            Salvar
                         </Button>
                     </Box>
                 </Modal>

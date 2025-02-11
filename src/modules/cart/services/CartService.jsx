@@ -1,83 +1,132 @@
-import { fetcher, poster, deleter, putter } from '../../../utils/axiosConfig'; // Importa funções reutilizáveis
+// cartService.js
+import axios from 'axios';
 
-const CART_URL = 'cart';
+const BASE_URL = 'http://localhost:8080'; // Defina o URL base do backend
+const CART_URL = `${BASE_URL}/cart`;
 
+// Função para adicionar item ao carrinho
 export const addToCart = async (productId) => {
   try {
     const token = localStorage.getItem('authToken');
-
-    console.log("Token recuperado: ", token);
-
-    const response = await poster(`${CART_URL}/add`, {productId : productId}, {
+    const response = await axios.post(`${CART_URL}/add`, { productId }, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
     });
 
-    if (response.value == 200){
-      console.log(response.message);
+    if (response.status === 200) {
+      console.log("Item adicionado ao carrinho:", response.data.message);
     }
 
-    return response;
+    return response.data;
   } catch (error) {
-    console.error('Erro ao adicionar produto:', error);
+    console.error('Erro ao adicionar produto ao carrinho:', error);
     throw error;
   }
 };
 
-
+// Função para obter o carrinho
 export const getCart = async () => {
   try {
     const token = localStorage.getItem('authToken');
-
-    const cart = await fetcher(CART_URL, {
+    const response = await axios.get(CART_URL, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
 
-    console.log('Carrinho:', cart);
-
-    return cart;
+    console.log('Carrinho recuperado:', response.data);
+    return response.data; // Retorna diretamente os dados do carrinho
   } catch (error) {
     console.error('Erro ao obter o carrinho:', error);
     throw error;
   }
 };
 
+// Função para obter a contagem de itens no carrinho
+export const getCartItemCount = async () => {
+  try {
+    const cart = await getCart();
+    const itemCount = cart.items.reduce((total, item) => total + item.quantity, 0);
+    console.log('Quantidade total de itens no carrinho:', itemCount);
+    return itemCount;
+  } catch (error) {
+    console.error('Erro ao obter a contagem de itens no carrinho:', error);
+    throw error;
+  }
+};
 
+
+// Função para remover um item do carrinho
 export const removeFromCart = async (productId) => {
   try {
-    const response = await deleter(`${CART_URL}/remove/${productId}`);
-    console.log('Produto removido:', response);
-    return response;
+    const token = localStorage.getItem('authToken');
+    const response = await axios.delete(`${CART_URL}/remove/${productId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log('Produto removido do carrinho:', response.data);
+    return response.data;
   } catch (error) {
-    console.error('Erro ao remover produto:', error);
+    console.error('Erro ao remover produto do carrinho:', error);
     throw error;
   }
 };
 
+// Função para aumentar a quantidade de um item
+export const incrementQuantity = async (productId) => {
+  try {
+    const token = localStorage.getItem('authToken');
+    const response = await axios.put(`${CART_URL}/increment`, { productId }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
+    console.log('Quantidade aumentada no carrinho:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao aumentar quantidade:', error);
+    throw error;
+  }
+};
+
+// Função para diminuir a quantidade de um item
 export const decrementQuantity = async (productId) => {
   try {
-    const data = { productId };
-    const response = await putter(`${CART_URL}/decrement`, data);
-    console.log('Quantidade diminuída:', response);
-    return response;
+    const token = localStorage.getItem('authToken');
+    const response = await axios.put(`${CART_URL}/decrement`, { productId }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Quantidade diminuída no carrinho:', response.data);
+    return response.data;
   } catch (error) {
-    console.error('Erro ao diminuir quantidade:', error);
+    console.error('Erro ao diminuir a quantidade do produto:', error);
     throw error;
   }
 };
 
-
+// Função para esvaziar o carrinho
 export const clearCart = async () => {
   try {
-    const response = await deleter(`${CART_URL}/removeAll`);
-    console.log('Carrinho esvaziado:', response);
-    return response;
+    const token = localStorage.getItem('authToken');
+    const response = await axios.delete(`${CART_URL}/removeAll`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log('Carrinho esvaziado:', response.data);
+    return response.data;
   } catch (error) {
     console.error('Erro ao esvaziar o carrinho:', error);
     throw error;
