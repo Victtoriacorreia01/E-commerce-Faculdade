@@ -9,31 +9,53 @@ const axiosInstance = axios.create({
     withCredentials: true,
 });
 
+const isPublicRoute = (url: string) => {
+    const publicRoutes = [
+        '/contact/contact',
+    ];
 
+    try {
+        const path = new URL(url, 'http://localhost:8080').pathname; // garante que mesmo path relativo funcione
+        return publicRoutes.some((route) => path.startsWith(route));
+    } catch (e) {
+        console.warn('URL inválida ao verificar rota pública:', url);
+        return false;
+    }
+};
+// Função para GET requests
 export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
     try {
         const [url, config] = Array.isArray(args) ? args : [args];
 
-        // Adicione o token JWT aos cabeçalhos
-        const token = localStorage.getItem('authToken'); // Supondo que o token esteja armazenado no localStorage
+        const token = localStorage.getItem('authToken');
         const headers = {
             ...config?.headers,
-            Authorization: token ? `Bearer ${token}` : undefined,
+            Authorization: !isPublicRoute(url) && token ? `Bearer ${token}` : undefined,
         };
 
         const response = await axiosInstance.get(url, { ...config, headers });
-        return response.data; // Retorna apenas os dados da resposta
+        return response.data;
     } catch (error) {
         console.error('Erro no fetcher (GET):', error);
         throw error;
     }
 };
 
-// Função para POST requests
 export const poster = async (url: string, data: any, config = {}) => {
     try {
-        const response = await axiosInstance.post(url, data, config);
-        return response.data; // Retorna apenas os dados
+        const token = localStorage.getItem('authToken');
+        const headers = {
+            ...config?.headers,
+            Authorization: !isPublicRoute(url) && token ? `Bearer ${token}` : undefined,
+        };
+
+        console.log('POST URL:', url);
+        console.log('isPublicRoute:', isPublicRoute(url));
+        console.log('Token:', token);
+        console.log('Headers enviados:', headers);
+
+        const response = await axiosInstance.post(url, data, { ...config, headers });
+        return response.data;
     } catch (error) {
         console.error('Erro na requisição POST:', error);
         throw error;
@@ -44,8 +66,15 @@ export const poster = async (url: string, data: any, config = {}) => {
 export const deleter = async (args: string | [string, AxiosRequestConfig]) => {
     try {
         const [url, config] = Array.isArray(args) ? args : [args];
-        const response = await axiosInstance.delete(url, { ...config });
-        return response.data; // Retorna apenas os dados da resposta
+
+        const token = localStorage.getItem('authToken');
+        const headers = {
+            ...config?.headers,
+            Authorization: !isPublicRoute(url) && token ? `Bearer ${token}` : undefined,
+        };
+
+        const response = await axiosInstance.delete(url, { ...config, headers });
+        return response.data;
     } catch (error) {
         console.error('Erro no deleter (DELETE):', error);
         throw error;
@@ -60,13 +89,20 @@ export const putter = async (
 ) => {
     try {
         const [url, baseConfig] = Array.isArray(args) ? args : [args];
-        const response = await axiosInstance.put(url, data, { ...baseConfig, ...config });
-        return response.data; // Retorna apenas os dados da resposta
+
+        const token = localStorage.getItem('authToken');
+        const headers = {
+            ...baseConfig?.headers,
+            Authorization: !isPublicRoute(url) && token ? `Bearer ${token}` : undefined,
+        };
+
+        const response = await axiosInstance.put(url, data, { ...baseConfig, ...config, headers });
+        return response.data;
     } catch (error) {
         console.error('Erro no putter (PUT):', error);
         throw error;
     }
 };
 
-// Exporta a instância do axios para ser usada em outras partes do projeto
+// Exporta a instância do axios
 export default axiosInstance;

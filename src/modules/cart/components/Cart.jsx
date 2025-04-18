@@ -1,29 +1,42 @@
 import React, { useEffect, useState } from 'react'; 
-import { getCart, removeFromCart, decrementQuantity, clearCart, incrementQuantity } from '../services/CartService';
+import { getCart, removeFromCart, decrementQuantity, clearCart, incrementQuantity, } from '../services/CartService';
+import { createOrder } from '../services/CartService';
 import styles from '../styles/Cart.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
+
+
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
-
   useEffect(() => {
     const loadCart = async () => {
       try {
         const cartData = await getCart();
-        console.log('Dados do carrinho:', cartData);
-        setCart(cartData.items || []);
-        calculateTotal(cartData.items || []);
+    
+        if (!cartData.items || cartData.items.length === 0) {
+          const localCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+          setCart(localCart.items);
+          calculateTotal(localCart.items);
+        } else {
+          setCart(cartData.items);
+          calculateTotal(cartData.items);
+          localStorage.setItem('cart', JSON.stringify(cartData)); 
+        }
       } catch (error) {
-        console.error('Erro ao carregar o carrinho:', error);
+        console.error('Erro ao carregar carrinho:', error);
+        const localCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+        setCart(localCart.items);
+        calculateTotal(localCart.items);
       }
     };
-
+  
     loadCart();
   }, []);
+  
 
   const calculateTotal = (cartItems) => {
     const newTotal = cartItems.reduce((acc, item) => {
@@ -54,11 +67,10 @@ const Cart = () => {
   const handleIncreaseQuantity = async (id) => {
     try {
       const updatedCartData = await incrementQuantity(id);
-      console.log('Dados atualizados do carrinho:', updatedCartData);
       setCart(updatedCartData.items || []);
       setTotal(updatedCartData.total || 0);
     } catch (error) {
-      console.error('Erro ao aumentar quantidade:', error);
+      console.error('Error increasing quantity:', error);
     }
   };
 
@@ -68,15 +80,25 @@ const Cart = () => {
     setTotal(0);
   };
 
-  const handleCheckout = () => {
-    navigate('/cart/Adress', { state: { total } }); // Enviando o total através do estado
+  const handleCheckout = async () => {
+    console.log('Botão de checkout clicado');
+  
+    try {
+      const response = await createOrder();
+      console.log('Pedido criado com sucesso:', response);
+  
+  
+      navigate('/cart/address', { state: { total } });
+    } catch (error) {
+      console.error('Erro no checkout:', error);
+      alert('Erro ao criar pedido');
+    }
   };
-
   return (
     <div className={styles.cartContainer}>
-      <h1 className={styles.title}>Meu Carrinho</h1>
+      <h1 className={styles.title}>My Cart</h1>
       {cart.length === 0 ? (
-        <p>Seu carrinho está vazio.</p>
+        <p>Your cart is empty.</p>
       ) : (
         <>
           <ul>
@@ -84,14 +106,14 @@ const Cart = () => {
               <li key={item.id} className={styles.cartItem}>
                 <img 
                   src={item.imageUrl ? `http://localhost:8080/${item.imageUrl}` : 'default-image.jpg'} 
-                  alt={item.name || 'Produto'} 
+                  alt={item.name || 'Product'} 
                   width={150} 
                   height={150} 
                   className={styles.imgproduct} 
                 />
                 <div>
-                  <h2>{item.name || 'Produto sem nome'}</h2>
-                  <p>Preço: R$ {parseFloat(item.price || 0).toFixed(2)}</p>
+                  <h2>{item.name || 'Unnamed Product'}</h2>
+                  <p>Price: R$ {parseFloat(item.price || 0).toFixed(2)}</p>
                   <div className={styles.cartItemActions}>
                     <div className={styles.cartQuantityContainer}>
                       <button className={styles.quantityButton} onClick={() => handleDecreaseQuantity(item.id)} disabled={(item.quantity || 1) <= 1}>-</button>
@@ -109,9 +131,9 @@ const Cart = () => {
           <div className={styles.orderSummary}>
             <h2>Total: R$ {total}</h2>
             <div className={styles.buttonContainer}>
-              <button className={styles.emptyCartButton} onClick={handleClearCart}>Esvaziar Carrinho</button>
-              <button className={styles.orderButton} onClick={handleCheckout}>Compre Agora</button>
-            </div>
+              <button className={styles.emptyCartButton} onClick={handleClearCart}>Empty Cart</button>
+              <button className={styles.orderButton} onClick={handleCheckout}>Checkout</button>
+              </div>
           </div>
         </>
       )}

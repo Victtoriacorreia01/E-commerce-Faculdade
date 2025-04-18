@@ -84,7 +84,7 @@ export default function Header() {
     <header>
       <div className={styles.freeShipping}>
         <p className={styles.freeShippingText}>
-          Frete grátis para pedidos acima de R$200,00!
+        Free shipping on orders over R$200
         </p>
       </div>
 
@@ -97,10 +97,10 @@ export default function Header() {
                   <Link to="/login/login" className={styles.navLink}>Login</Link>
                 </li>
                 <li>
-                  <Link to="/contact/contact" className={styles.navLink}>Contato</Link>
+                  <Link to="/contact/contact" className={styles.navLink}>Contact</Link>
                 </li>
                 <li>
-                  <Link to="/order/order" className={styles.navLink}>Meus pedidos!</Link>
+                  <Link to="/order/order" className={styles.navLink}>My Orders</Link>
                 </li>
               </ul>
             </div>
@@ -116,18 +116,18 @@ export default function Header() {
             </div>
             <nav className={`${styles.wFull} ${styles.navbar}`}>
               <ul className={`${styles.flex} ${styles.spaceX10}`}>
-                <li><Link to="/" className={styles.navbarLink}>Home</Link></li>
-                <li><Link to="/fem/female" className={styles.navbarLink}>Feminino</Link></li>
-                <li><Link to="/man/men" className={styles.navbarLink}>Masculino</Link></li>
-                <li><Link to="/sport/sport" className={styles.navbarLink}>Esporte</Link></li>
-                <li><Link to="/beauty/page" className={styles.navbarLink}>Beleza</Link></li>
+              <li><Link to="/" className={styles.navbarLink}>Home</Link></li>
+                <li><Link to="/fem/female" className={styles.navbarLink}>Female</Link></li>
+                <li><Link to="/man/men" className={styles.navbarLink}>Male</Link></li>
+                <li><Link to="/sport/sport" className={styles.navbarLink}>Sports</Link></li>
+                <li><Link to="/beauty/page" className={styles.navbarLink}>Beauty</Link></li>
               </ul>
               <form onSubmit={handleSearch} className={styles.searchForm}>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Procure oque deseja" 
+                    placeholder="Search for anything" 
                     className={styles.searchInput}
                   />
                   <button type="submit" className={styles.searchButton}>
@@ -143,14 +143,14 @@ export default function Header() {
                 />
             {showAccountMenu && (
               <div className={`${styles.accountMenu} ${showAccountMenu ? styles.show : ''}`}>
-                <Link to="/account/account" className={styles.accountMenuItem}>Meu Perfil</Link>
-                <Link to="/order/order" className={styles.accountMenuItem}>Meus Pedidos</Link>
-                <Link to="/account/coupons" className={styles.accountMenuItem}>Meus Cupons</Link>
+                <Link to="/account/account" className={styles.accountMenuItem}>My Profile</Link>
+                <Link to="/order/order" className={styles.accountMenuItem}>My Orders</Link>
+                <Link to="/account/coupons" className={styles.accountMenuItem}>My Coupons</Link>
                 <button
                   onClick={handleLogout}
                   className={styles.accountMenuItem}
                 >
-                  Sair
+                  Exit
                 </button>
               </div>
             )}

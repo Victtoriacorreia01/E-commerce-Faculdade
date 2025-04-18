@@ -11,31 +11,30 @@ const Man = () => {
   const { addProductIntoCart } = useCart();
   const [cart, setCart] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [produtos, setProdutos] = useState([]); 
+  const [products, setProducts] = useState([]); 
   const [maxPrice, setMaxPrice] = useState(1000);
   const [sortOption, setSortOption] = useState('relevancy');
 
-  // useEffect para buscar produtos do backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const data = await getProductsByCategory();
-        console.log('Dados recebidos:', data); // Verifique o que está sendo retornado
-        setProdutos(
-          data.map((produto) => ({
-            id: produto.id,
-            nome: produto.name,
-            preco: produto.price,
-            imagem: `http://localhost:8080/${produto.imageUrl}`,
-            rating: produto.rating || 0, // Adiciona rating como 0 caso não exista
+        console.log('Data received:', data);
+        setProducts(
+          data.map((product) => ({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: `http://localhost:8080/${product.imageUrl}`,
+            rating: product.rating || 0,
           }))
         );
       } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
+        console.error('Error fetching products:', error);
       }
     };
 
-    fetchProducts(); // Chame a função para buscar produtos
+    fetchProducts(); 
     const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
     setFavorites(storedFavorites);
   }, []);
@@ -45,56 +44,55 @@ const Man = () => {
       await addToCart(product.id);
       await fetchCart();
     } catch (error) {
-      console.error('Erro ao adicionar ao carrinho:', error);
+      console.error('Error adding to cart:', error);
     }
   };
 
-  const toggleFavorite = async (produto) => {
+  const toggleFavorite = async (product) => {
     try {
-      const isFavorite = favorites.includes(produto.id);
+      const isFavorite = favorites.includes(product.id);
   
       if (isFavorite) {
-        // Remove dos favoritos
-        await removeFromFavorites(produto.id);
+        await removeFromFavorites(product.id);
         setFavorites((prev) => {
-          const updatedFavorites = prev.filter((id) => id !== produto.id);
-          localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Sincroniza com localStorage
+          const updatedFavorites = prev.filter((id) => id !== product.id);
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
           return updatedFavorites;
         });
       } else {
-        // Adiciona aos favoritos
-        await addToFavorites(produto.id);
+        await addToFavorites(product.id);
         setFavorites((prev) => {
-          const updatedFavorites = [...prev, produto.id];
-          localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Sincroniza com localStorage
+          const updatedFavorites = [...prev, product.id];
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
           return updatedFavorites;
         });
       }
     } catch (error) {
-      console.error('Erro ao atualizar favoritos:', error);
+      console.error('Error updating favorites:', error);
     }
   };
+
   const fetchCart = async () => {
     try {
       const cartData = await getCart();
       setCart(cartData.items || []);
     } catch (error) {
-      console.error('Erro ao buscar o carrinho:', error);
+      console.error('Error fetching cart:', error);
     }
   };
 
-  const sortedProducts = [...produtos].sort((a, b) => {
-    if (sortOption === 'price_asc') return a.preco - b.preco;
-    if (sortOption === 'price_desc') return b.preco - a.preco;
+  const sortedProducts = [...products].sort((a, b) => {
+    if (sortOption === 'price_asc') return a.price - b.price;
+    if (sortOption === 'price_desc') return b.price - a.price;
     return 0;
   });
 
   const filteredProducts = sortedProducts.filter(
-    (produto) => produto.preco <= maxPrice
+    (product) => product.price <= maxPrice
   );
 
   const renderStars = (rating) => {
-    const validRating = Math.min(Math.max(rating, 0), 5); // Garante que o rating esteja entre 0 e 5
+    const validRating = Math.min(Math.max(rating, 0), 5);
     return Array.from({ length: 5 }).map((_, i) => (
       <i
         key={i}
@@ -107,20 +105,20 @@ const Man = () => {
     <div className="container mx-auto mt-20 mb-10">
       <div className="grid grid-cols-4 gap-4">
         <div className="col-span-1 bg-white p-4 shadow-lg rounded-lg">
-          <h1 className="text-lg font-bold mb-2 text-black">Ordenar Por</h1>
+          <h1 className="text-lg font-bold mb-2 text-black">Sort By</h1>
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
             className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-3 py-2 rounded shadow text-sm"
           >
-            <option value="relevancy">Mais relevantes</option>
-            <option value="price_asc">Preço - Baixo para Alto</option>
-            <option value="price_desc">Preço - Alto para Baixo</option>
+            <option value="relevancy">Most Relevant</option>
+            <option value="price_asc">Price - Low to High</option>
+            <option value="price_desc">Price - High to Low</option>
           </select>
 
-          <h2 className="text-xl font-bold text-gray-800 my-4">Filtros</h2>
+          <h2 className="text-xl font-bold text-gray-800 my-4">Filters</h2>
           <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Preços</h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">Price</h3>
             <input
               type="range"
               min="0"
@@ -129,46 +127,46 @@ const Man = () => {
               onChange={(e) => setMaxPrice(e.target.value)}
               className="w-full accent-green-500"
             />
-            <p className="text-gray-600 mt-1">Até R$ {maxPrice}</p>
+            <p className="text-gray-600 mt-1">Up to R$ {maxPrice}</p>
           </div>
         </div>
 
         <div className="col-span-3 grid grid-cols-1 md:grid-cols-4 gap-4">
           {filteredProducts.length > 0 ? (
-            filteredProducts.map((produto) => (
-              <div key={produto.id} className="bg-white p-2 shadow-md rounded-lg">
+            filteredProducts.map((product) => (
+              <div key={product.id} className="bg-white p-2 shadow-md rounded-lg">
                 <div className="w-full h-40 overflow-hidden">
                   <img
-                    src={produto.imagem}
-                    alt={produto.nome}
+                    src={product.image}
+                    alt={product.name}
                     className="w-full h-full object-contain rounded-lg"
                   />
                 </div>
-                <Link to={`/products/details/${produto.id}`}>
-                  <span className="text-lg font-semibold mt-2 block">{produto.nome}</span>
+                <Link to={`/products/details/${product.id}`}>
+                  <span className="text-lg font-semibold mt-2 block">{product.name}</span>
                 </Link>
-                <p className="text-gray-600">Preço: R$ {produto.preco.toFixed(2)}</p>
+                <p className="text-gray-600">Price: R$ {product.price.toFixed(2)}</p>
                 <div className="flex items-center mt-2">
                   <button
-                    onClick={() => toggleFavorite(produto)}
-                    className={`ml-3 ${favorites.includes(produto.id) ? 'text-red-500' : 'text-gray-500'}`}
+                    onClick={() => toggleFavorite(product)}
+                    className={`ml-3 ${favorites.includes(product.id) ? 'text-red-500' : 'text-gray-500'}`}
                   >
                     <i className="fas fa-heart" />
                   </button>
                   <button
-                    onClick={() => handleAddToCart(produto)}
+                    onClick={() => handleAddToCart(product)}
                     className="text-green-500 hover:text-green-700"
                   >
                     <i className="fas fa-cart-plus" />
                   </button>
                 </div>
                 <div className="flex items-center mt-2">
-                  {renderStars(produto.rating)} {/* Chama renderStars passando o rating */}
+                  {renderStars(product.rating)}
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-gray-600">Nenhum produto encontrado.</p>
+            <p className="text-gray-600">No products found.</p>
           )}
         </div>
       </div>

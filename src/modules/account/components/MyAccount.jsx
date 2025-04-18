@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { getUserProfile, updateUserProfile, updateUserAddress } from '../services/userService';
+import { getUserProfile, updateUserProfile, updateUserAddress, uploadProfileImage } from '../services/userService';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Box, TextField, Button } from '@mui/material';
 import '../styles/MyAccount.css';
 import { FaUserCircle } from 'react-icons/fa';
-import logo from '../../../assets/logo.png'; 
+import logo from '../../../assets/logo.png';
 
 const MyAccount = () => {
     const [user, setUser] = useState(null);
@@ -31,7 +31,7 @@ const MyAccount = () => {
             try {
                 const token = localStorage.getItem('authToken');
                 if (!token) {
-                    navigate('/login/login');
+                    navigate('/account/account');
                     return;
                 }
                 const response = await getUserProfile();
@@ -59,11 +59,14 @@ const MyAccount = () => {
     const handleSavePersonalInfo = async () => {
         try {
             await updateUserProfile(editedUser);
-            const updatedUser = await getUserProfile();  
-            setEditedUser(updatedUser);  
+            setUser((prev) => ({
+                ...prev,
+                ...editedUser,
+            }));
+            localStorage.setItem('user', JSON.stringify({ ...user, ...editedUser }));
             setOpenPersonalModal(false);
         } catch (error) {
-            console.error('Erro ao atualizar informações pessoais:', error);
+            console.error('Error updating personal information:', error);
         }
     };
 
@@ -75,7 +78,7 @@ const MyAccount = () => {
             setAddress(updatedUser.address || {});
             setOpenAddressModal(false);
         } catch (error) {
-            console.error('Erro ao atualizar endereço:', error);
+            console.error('Error updating address:', error);
         }
     };
 
@@ -84,19 +87,20 @@ const MyAccount = () => {
         navigate('/login/login');
     };
 
-    const handleImageUpload = (e) => {
+    const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => setProfileImage(reader.result);
-            reader.readAsDataURL(file);
+        if (!file) return;
+    
+        try {
+            const response = await uploadProfileImage(file);
+            console.log('Imagem enviada com sucesso:', response);
+    
+            setProfileImage(URL.createObjectURL(file)); // Atualiza a imagem localmente
+        } catch (error) {
+            console.error('Erro ao enviar imagem:', error);
         }
     };
-
-    if (loading) {
-        return <div className="loading">Carregando...</div>;
-    }
-
+    
     return (
         <div className="account-settings">
             <aside className="sidebar">
@@ -104,73 +108,71 @@ const MyAccount = () => {
                     <img src={logo} alt="Logo" className="sidebar-logo" />
                 </div>
                 <ul>
-                    <li onClick={() => navigate('/account/account')}>Minha Conta</li>
-                    <li onClick={() => navigate('/order/order')}>Meus Pedidos</li>
-                    <li onClick={() => navigate('/favorite/favorite')}>Meus Favoritos</li>
-                    <li className="danger" onClick={handleLogout}>Sair da conta</li>
+                    <li onClick={() => navigate('/account/account')}>My Account</li>
+                    <li onClick={() => navigate('/order/order')}>My Orders</li>
+                    <li onClick={() => navigate('/favorite/favorite')}>My Favorites</li>
+                    <li className="danger" onClick={handleLogout}>Log Out</li>
                 </ul>
             </aside>
             <main className="profile-content">
-                <section className="profile-header">
-                    <div className="profile-info">
-                        {profileImage ? (
-                            <img src={profileImage} alt="Profile" className="profile-pic" />
-                        ) : (
-                            <FaUserCircle className="profile-pic" size={100} />
-                        )}
-                        <div>
-                            <h2>{user?.name}</h2>
-                            <p>{user?.jobTitle}</p>
-                            <p>{user?.location}</p>
+            <section className="profile-header">
+                        <div className="profile-info">
+                            <label htmlFor="upload-button" className="profile-pic-container">
+                                {profileImage ? (
+                                    <img src={profileImage} alt="Profile" className="profile-pic" />
+                                ) : (
+                                    <FaUserCircle className="profile-pic cursor-pointer" size={100} />
+                                )}
+                            </label>
+                            <input
+                                id="upload-button"
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                onChange={handleImageUpload}
+                            />
+                            <div>
+                                <h2>{user?.name}</h2>
+                                <p>{user?.jobTitle}</p>
+                                <p>{user?.location}</p>
+                            </div>
                         </div>
-                    </div>
-                    <label htmlFor="upload-button" className="edit-button">
-                        Upload Foto
-                    </label>
-                    <input
-                        id="upload-button"
-                        type="file"
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        onChange={handleImageUpload}
-                    />
-                </section>
-
+                    </section>
                 <div className="section-header">
-                    <h3 className="h3">Informações Pessoais</h3>
-                    <button className="edit-button" onClick={() => setOpenPersonalModal(true)}>Editar</button>
+                    <h3 className="h3">Personal Information</h3>
+                    <button className="edit-button" onClick={() => setOpenPersonalModal(true)}>Edit</button>
                 </div>
                 <div className="info-grid">
                     <div><strong>Email:</strong> {user?.email}</div>
-                    <div><strong>Telefone:</strong> {user?.telephone}</div>
-                    <div><strong>Data de Nascimento:</strong> {user?.birthdate}</div>
+                    <div><strong>Phone:</strong> {user?.telephone}</div>
+                    <div><strong>Birthdate:</strong> {user?.birthdate}</div>
                 </div>
 
                 <div className="section-header">
-                    <h3 className="h3">Meu Endereço</h3>
-                    <button className="edit-button" onClick={() => setOpenAddressModal(true)}>Editar</button>
+                    <h3 className="h3">My Address</h3>
+                    <button className="edit-button" onClick={() => setOpenAddressModal(true)}>Edit</button>
                 </div>
                 <div className="info-grid">
-                    <div><strong>Rua:</strong> {address.street}</div>
-                    <div><strong>Número:</strong> {address.number}</div>
-                    <div><strong>Bairro:</strong> {address.district}</div>
-                    <div><strong>CEP:</strong> {address.cep}</div>
-                    <div><strong>Cidade/Estado:</strong> {address.city}</div>
-                    <div><strong>Referência:</strong> {address.reference}</div>
+                    <div><strong>Street:</strong> {address.street}</div>
+                    <div><strong>Number:</strong> {address.number}</div>
+                    <div><strong>District:</strong> {address.district}</div>
+                    <div><strong>ZIP Code:</strong> {address.cep}</div>
+                    <div><strong>City/State:</strong> {address.city}</div>
+                    <div><strong>Reference:</strong> {address.reference}</div>
                 </div>
 
                 <Modal open={openPersonalModal} onClose={() => setOpenPersonalModal(false)}>
                     <Box className="modal-box">
-                        <h2 className="edit">Editar Informações Pessoais</h2>
+                        <h2 className="edit">Edit Personal Information</h2>
                         <TextField
-                            label="Data de Nascimento"
-                            value={editedUser.birthdate || ''}  
+                            label="Birthdate (dd/mm/yyyy)"
+                            value={editedUser.birthdate || ''}
                             onChange={(e) => handleChange(setEditedUser)('birthdate', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="Telefone"
+                            label="Phone"
                             value={editedUser.telephone || ''}
                             onChange={(e) => handleChange(setEditedUser)('telephone', e.target.value)}
                             fullWidth
@@ -181,51 +183,51 @@ const MyAccount = () => {
                             color="primary"
                             onClick={handleSavePersonalInfo}
                         >
-                            Salvar
+                            Save
                         </Button>
                     </Box>
                 </Modal>
 
                 <Modal open={openAddressModal} onClose={() => setOpenAddressModal(false)}>
                     <Box className="modal-box">
-                        <h2 className="edit">Editar Endereço</h2>
+                        <h2 className="edit">Edit Address</h2>
                         <TextField
-                            label="Rua"
+                            label="Street"
                             value={address.street || ''}
                             onChange={(e) => handleChange(setAddress)('street', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="Número"
+                            label="Number"
                             value={address.number || ''}
                             onChange={(e) => handleChange(setAddress)('number', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="Bairro"
+                            label="District"
                             value={address.district || ''}
                             onChange={(e) => handleChange(setAddress)('district', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="CEP"
+                            label="ZIP Code"
                             value={address.cep || ''}
                             onChange={(e) => handleChange(setAddress)('cep', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="Cidade/Estado"
+                            label="City/State"
                             value={address.city || ''}
                             onChange={(e) => handleChange(setAddress)('city', e.target.value)}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="Referência"
+                            label="Reference"
                             value={address.reference || ''}
                             onChange={(e) => handleChange(setAddress)('reference', e.target.value)}
                             fullWidth
@@ -236,7 +238,7 @@ const MyAccount = () => {
                             color="primary"
                             onClick={handleSaveAddress}
                         >
-                            Salvar
+                            Save
                         </Button>
                     </Box>
                 </Modal>

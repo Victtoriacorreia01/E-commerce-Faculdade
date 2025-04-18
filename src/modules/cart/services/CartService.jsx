@@ -1,10 +1,28 @@
 // cartService.js
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080'; // Defina o URL base do backend
+const BASE_URL = 'http://localhost:8080'; 
 const CART_URL = `${BASE_URL}/cart`;
 
-// Função para adicionar item ao carrinho
+
+export const createOrder = async () => {
+  try {
+    const token = localStorage.getItem('authToken');
+    const response = await axios.post(`${BASE_URL}/orders/create`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
+
+    console.log('Pedido criado com sucesso:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao criar pedido:', error);
+    throw error;
+  }
+};
+
 export const addToCart = async (productId) => {
   try {
     const token = localStorage.getItem('authToken');
@@ -26,7 +44,6 @@ export const addToCart = async (productId) => {
   }
 };
 
-// Função para obter o carrinho
 export const getCart = async () => {
   try {
     const token = localStorage.getItem('authToken');
@@ -38,14 +55,13 @@ export const getCart = async () => {
     });
 
     console.log('Carrinho recuperado:', response.data);
-    return response.data; // Retorna diretamente os dados do carrinho
+    return response.data;
   } catch (error) {
     console.error('Erro ao obter o carrinho:', error);
     throw error;
   }
 };
 
-// Função para obter a contagem de itens no carrinho
 export const getCartItemCount = async () => {
   try {
     const cart = await getCart();
@@ -59,7 +75,6 @@ export const getCartItemCount = async () => {
 };
 
 
-// Função para remover um item do carrinho
 export const removeFromCart = async (productId) => {
   try {
     const token = localStorage.getItem('authToken');
@@ -77,7 +92,7 @@ export const removeFromCart = async (productId) => {
   }
 };
 
-// Função para aumentar a quantidade de um item
+
 export const incrementQuantity = async (productId) => {
   try {
     const token = localStorage.getItem('authToken');
@@ -96,7 +111,6 @@ export const incrementQuantity = async (productId) => {
   }
 };
 
-// Função para diminuir a quantidade de um item
 export const decrementQuantity = async (productId) => {
   try {
     const token = localStorage.getItem('authToken');
@@ -115,7 +129,6 @@ export const decrementQuantity = async (productId) => {
   }
 };
 
-// Função para esvaziar o carrinho
 export const clearCart = async () => {
   try {
     const token = localStorage.getItem('authToken');
@@ -132,3 +145,4 @@ export const clearCart = async () => {
     throw error;
   }
 };
+

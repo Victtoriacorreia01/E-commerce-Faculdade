@@ -5,9 +5,10 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
-    // Inicializa o carrinho a partir do localStorage
     try {
-      return JSON.parse(localStorage.getItem('cart')) || [];
+      // Inicializa o carrinho a partir do localStorage e garante que seja um array
+      const savedCart = JSON.parse(localStorage.getItem('cart'));
+      return Array.isArray(savedCart) ? savedCart : [];
     } catch {
       return [];
     }

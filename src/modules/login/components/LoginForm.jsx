@@ -8,8 +8,8 @@ import Logo from '../../../assets/logo.png';
 import { useAuth } from '../../../AuthContext';
 
 const loginFormSchema = z.object({
-  email: z.string().min(1, 'O e-mail é obrigatório.').email('Informe um endereço de e-mail válido.'),
-  password: z.string().min(8, 'Verifique se a sua senha tem pelo menos 8 caracteres.'),
+  email: z.string().min(1, 'Email is required.').email('Enter a valid email address.'),
+  password: z.string().min(8, 'Password must be at least 8 characters long.'),
 });
 
 export default function LoginForm() {
@@ -22,7 +22,6 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginFormSchema),
@@ -43,22 +42,17 @@ export default function LoginForm() {
 
     try {
       const token = await loginUser(data);
-
-      console.log('Token recebido:', token);
-
       if (token) {
         login(token);
         setSuccess(true);
-        
         setTimeout(() => {
           navigate('/');
         }, 1000);
       } else {
-        throw new Error('Token não recebido.');
+        throw new Error('Token not received.');
       }
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
-      const errorMessage = error?.response?.data?.message || 'Erro ao fazer login. Verifique suas credenciais.';
+      const errorMessage = error?.response?.data?.message || 'Login failed. Check your credentials.';
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -71,14 +65,14 @@ export default function LoginForm() {
         <div>
           <img className="mx-auto h-12 w-auto" src={Logo} alt="Logo" />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Faça login na sua conta
+            Sign in to your account
           </h2>
         </div>
         <form className="mt-10 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email" className="sr-only">
-                E-mail
+                Email
               </label>
               <input
                 id="email"
@@ -87,14 +81,14 @@ export default function LoginForm() {
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
                   errors.email ? 'border-red-500' : 'border-gray-300'
                 } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder="E-mail"
+                placeholder="Email"
                 {...register('email')}
               />
               {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
             </div>
             <div>
               <label htmlFor="password" className="sr-only">
-                Senha
+                Password
               </label>
               <input
                 id="password"
@@ -103,7 +97,7 @@ export default function LoginForm() {
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
                   errors.password ? 'border-red-500' : 'border-gray-300'
                 } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder="Senha"
+                placeholder="Password"
                 {...register('password')}
               />
               {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
@@ -111,23 +105,23 @@ export default function LoginForm() {
           </div>
 
           {error && <div className="text-red-500 text-center">{error}</div>}
-          {success && <div className="text-green-500 text-center">Login realizado com sucesso!</div>}
+          {success && <div className="text-green-500 text-center">Login successful!</div>}
 
           <div>
             <button
               type="submit"
               disabled={isSubmitting || loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-pink-500 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {loading ? 'Carregando...' : 'Entrar'}
+              {loading ? 'Loading...' : 'Sign In'}
             </button>
           </div>
         </form>
         <div className="text-center">
           <p className="mt-2 text-sm text-gray-600">
-            Não tem uma conta?{' '}
+            Don't have an account?{' '}
             <a href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Crie sua conta
+              Create your account
             </a>
           </p>
         </div>

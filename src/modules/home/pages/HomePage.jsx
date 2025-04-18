@@ -31,25 +31,26 @@ const saleItems = [
 ];
 
 const mustHaveItems = [
-  { id: 1, link: '', img: imgSportWoman, title: 'Gym Clothing Set', oldPrice: 'R$120,00', newPrice: 'R$99,90' },
-  { id: 2, link: '', img: imgTshirtButton, title: 'T-shirt with buttons', oldPrice: 'R$60,00', newPrice: 'R$45,00' },
-  { id: 3, link: '', img: imgVans, title: 'Pair of high shoes', oldPrice: 'R$150,00', newPrice: 'R$80,00' },
-  { id: 4, link: '', img: imgTshirtPink, title: 'Pink T-shirt', oldPrice: 'R$80,00', newPrice: 'R$65,00' },
-  { id: 5, link: '', img: imgBagBlack, title: 'Black bag', oldPrice: 'R$100,00', newPrice: 'R$84,00' },
-  { id: 6, link: '', img: imgBlackDress, title: 'Black dress', oldPrice: 'R$200,00', newPrice: 'R$150,00' },
-  { id: 7, link: '', img: imgBrownTshirt, title: 'Brown T-shirt', oldPrice: 'R$80,00', newPrice: 'R$64,00' },
-  { id: 8, link: '', img: imgJeans, title: 'Simple Jeans', oldPrice: 'R$180,00', newPrice: 'R$120,00' },
-  { id: 9, link: '', img: imgBlackBoots, title: 'Black Boots', oldPrice: 'R$199,90', newPrice: 'R$100,00' },
-  { id: 10, link: '', img: imgGreenShoes, title: 'Set of shorts', oldPrice: 'R$250,00', newPrice: 'R$120,00' },
-  { id: 11, link: '', img: imgBlackShort, title: 'Black short', oldPrice: 'R$60,00', newPrice: 'R$38,00' },
-  { id: 12, link: '', img: imgDressSclack, title: 'Black dress with sleeves', oldPrice: 'R$205,00', newPrice: 'R$167,00' },
+  { id: 1, link: '', img: imgSportWoman, title: 'Gym Clothing Set', oldPrice: '$120,00', newPrice: '$99,90' },
+  { id: 2, link: '', img: imgTshirtButton, title: 'T-shirt with buttons', oldPrice: '$60,00', newPrice: '$45,00' },
+  { id: 3, link: '', img: imgVans, title: 'Pair of high shoes', oldPrice: '$150,00', newPrice: '$80,00' },
+  { id: 4, link: '', img: imgTshirtPink, title: 'Pink T-shirt', oldPrice: '$80,00', newPrice: '$65,00' },
+  { id: 5, link: '', img: imgBagBlack, title: 'Black bag', oldPrice: '$100,00', newPrice: '$84,00' },
+  { id: 6, link: '', img: imgBlackDress, title: 'Black dress', oldPrice: '$200,00', newPrice: '$150,00' },
+  { id: 7, link: '', img: imgBrownTshirt, title: 'Brown T-shirt', oldPrice: 'R$80,00', newPrice: '$64,00' },
+  { id: 8, link: '', img: imgJeans, title: 'Simple Jeans', oldPrice: '$180,00', newPrice: '$120,00' },
+  { id: 9, link: '', img: imgBlackBoots, title: 'Black Boots', oldPrice: '$199,90', newPrice: '$100,00' },
+  { id: 10, link: '', img: imgGreenShoes, title: 'Set of shorts', oldPrice: '$250,00', newPrice: '$120,00' },
+  { id: 11, link: '', img: imgBlackShort, title: 'Black short', oldPrice: '$60,00', newPrice: '$38,00' },
+  { id: 12, link: '', img: imgDressSclack, title: 'Black dress with sleeves', oldPrice: '$205,00', newPrice: '$167,00' },
 ];
 
 const reviews = [
-  { id: 1, name: 'Lara Silva', text: 'Simplemente incrível todas as peças que comprei!', rating: 5 },
-  { id: 2, name: 'André Oliveira', text: 'É a segunda compra que faço para minha filha e as peças são de ótima qualidade!', rating: 4 },
-  { id: 3, name: 'Alice Lourem', text: 'Atendimento Online perfeito e peças de ótima qualidade!', rating: 4 },
+  { id: 1, name: 'Lara Silva', text: 'Simply amazing, all the pieces I bought!', rating: 5 },
+  { id: 2, name: 'André Oliveira', text: 'This is my second purchase for my daughter, and the pieces are of great quality!', rating: 4 },
+  { id: 3, name: 'Alice Lourem', text: 'Perfect online service and high-quality pieces!', rating: 4 },
 ];
+
 
 const blogPosts = [
   { id: 1, title: 'lorem lorem lorem', excerpt: 'lorem', img: imgSummerFashion, link: '' },

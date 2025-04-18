@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.css';
 import useCart from '../../../hooks/use-cart';
-import { getProductsByCategory } from '../services/SportService'; // Altere o serviço
+import { getProductsByCategory } from '../services/SportService';
 import { addToFavorites, removeFromFavorites } from '../../favorites/services/FavoriteService';
 import { addToCart, getCart } from '../../cart/services/CartService';
 
@@ -17,36 +17,34 @@ const Sport = () => {
 
   const handleAddToCart = async (product) => {
     try {
-      await addToCart(product.id); // Adiciona ao carrinho
-      await fetchCart(); // Atualiza o estado do carrinho
+      await addToCart(product.id);
+      await fetchCart();
     } catch (error) {
-      console.error('Erro ao adicionar ao carrinho:', error);
+      console.error('Error adding to cart:', error);
     }
   };
 
   const toggleFavorite = async (produto) => {
     try {
       const isFavorite = favorites.includes(produto.id);
-  
+
       if (isFavorite) {
-        // Remove dos favoritos
         await removeFromFavorites(produto.id);
         setFavorites((prev) => {
           const updatedFavorites = prev.filter((id) => id !== produto.id);
-          localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Sincroniza com localStorage
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
           return updatedFavorites;
         });
       } else {
-        // Adiciona aos favoritos
         await addToFavorites(produto.id);
         setFavorites((prev) => {
           const updatedFavorites = [...prev, produto.id];
-          localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Sincroniza com localStorage
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
           return updatedFavorites;
         });
       }
     } catch (error) {
-      console.error('Erro ao atualizar favoritos:', error);
+      console.error('Error updating favorites:', error);
     }
   };
 
@@ -63,7 +61,7 @@ const Sport = () => {
       const cartData = await getCart();
       setCart(cartData.items || []);
     } catch (error) {
-      console.error('Erro ao buscar o carrinho:', error);
+      console.error('Error fetching cart:', error);
     }
   };
 
@@ -75,7 +73,7 @@ const Sport = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await getProductsByCategory(); // Chamada específica para Esporte
+        const data = await getProductsByCategory();
         setProdutos(
           data.map((produto) => ({
             id: produto.id,
@@ -85,7 +83,7 @@ const Sport = () => {
           }))
         );
       } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
+        console.error('Error fetching products:', error);
       }
     };
 
@@ -114,20 +112,20 @@ const Sport = () => {
     <div className="container mx-auto mt-20 mb-10">
       <div className="grid grid-cols-4 gap-4">
         <div className="col-span-1 bg-white p-4 shadow-lg rounded-lg">
-          <h1 className="text-lg font-bold mb-2 text-black">Ordenar Por</h1>
+          <h1 className="text-lg font-bold mb-2 text-black">Sort By</h1>
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
             className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-3 py-2 rounded shadow text-sm"
           >
-            <option value="relevancy">Mais relevantes</option>
-            <option value="price_asc">Preço - Baixo para Alto</option>
-            <option value="price_desc">Preço - Alto para Baixo</option>
+            <option value="relevancy">Most relevant</option>
+            <option value="price_asc">Price - Low to High</option>
+            <option value="price_desc">Price - High to Low</option>
           </select>
 
-          <h2 className="text-xl font-bold text-gray-800 my-4">Filtros</h2>
+          <h2 className="text-xl font-bold text-gray-800 my-4">Filters</h2>
           <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Preços</h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">Prices</h3>
             <input
               type="range"
               min="0"
@@ -136,7 +134,7 @@ const Sport = () => {
               onChange={(e) => setMaxPrice(e.target.value)}
               className="w-full accent-green-500"
             />
-            <p className="text-gray-600 mt-1">Até R$ {maxPrice}</p>
+            <p className="text-gray-600 mt-1">Up to R$ {maxPrice}</p>
           </div>
         </div>
 
@@ -154,7 +152,7 @@ const Sport = () => {
                 <Link to={`/products/details/${produto.id}`}>
                   <span className="text-lg font-semibold mt-2 block">{produto.nome}</span>
                 </Link>
-                <p className="text-gray-600">Preço: R$ {produto.preco.toFixed(2)}</p>
+                <p className="text-gray-600">Price: R$ {produto.preco.toFixed(2)}</p>
                 <div className="flex items-center mt-2">
                   <button
                     onClick={() => toggleFavorite(produto)}
@@ -175,7 +173,7 @@ const Sport = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-600">Nenhum produto encontrado.</p>
+            <p className="text-gray-600">No products found.</p>
           )}
         </div>
       </div>

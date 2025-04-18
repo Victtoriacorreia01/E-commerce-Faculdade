@@ -1,6 +1,6 @@
 footer {
-    background-color: black;
-    color: white;
+    background-color: rgb(255, 255, 255);
+    color: rgb(58, 58, 58);
     padding: 3rem 0;
   }
 
@@ -11,14 +11,14 @@ footer {
     margin-left: 30px;
   }
   .direitos{
-    color: white;
+    color: rgb(255, 15, 87);
   }
 
   .email{
-    color: white;
+    color: rgb(255, 22, 76);
   }
   .num{
-    color: white;
+    color:rgb(255, 15, 87);
   }
   
   
@@ -45,7 +45,7 @@ footer {
   .newsletter p {
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: #f87171;
+    color: #ff055c;
   }
   
   .newsletter input {
