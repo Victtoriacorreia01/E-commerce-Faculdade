@@ -5,7 +5,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
 
-    // 🔹 Computa a quantidade total de itens no carrinho
+    // Atualização imediata da quantidade de itens no carrinho
     const cartCount = useMemo(() => {
         return cart.reduce((total, product) => total + (product.quantity || 1), 0);
     }, [cart]);
@@ -46,7 +46,7 @@ export const CartProvider = ({ children }) => {
     return (
         <CartContext.Provider value={{
             cart,
-            cartCount, // 🔹 Agora temos a quantidade total no contexto
+            cartCount, // Aqui o contador de itens está sendo atualizado corretamente
             addProductIntoCart,
             removeProductFromCart,
             productCartIncrement,

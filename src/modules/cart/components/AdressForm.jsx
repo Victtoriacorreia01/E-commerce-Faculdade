@@ -36,9 +36,8 @@ const CombinedCheckout = () => {
   const [creditCardData, setCreditCardData] = useState({
     number: '',
     expiry: '',
-    cvc: '', 
+    cvc: '',
   });
-  
 
   const [creditCardErrors, setCreditCardErrors] = useState({});
 
@@ -49,7 +48,6 @@ const CombinedCheckout = () => {
       [name]: value,
     });
   };
-  
 
   const validateCreditCard = () => {
     const errors = {};
@@ -65,7 +63,6 @@ const CombinedCheckout = () => {
     if (!/^\d{3}$/.test(creditCardData.cvc)) {
       errors.cvc = 'CVC must be 3 digits';
     }
-    
 
     if (installments < 1 || installments > 12) {
       errors.installments = 'Installments must be between 1 and 12';
@@ -112,8 +109,8 @@ const CombinedCheckout = () => {
 
   const handleCompletePurchase = async () => {
     if (selectedMethod === 'credit' && !validateCreditCard()) {
-      console.log("Dados do cartão enviados:", creditCardData);
-      console.log("Parcelas:", installments);
+      console.log('Dados do cartão inválidos:', creditCardData);
+      console.log('Parcelas:', installments);
       return;
     }
 
@@ -123,13 +120,33 @@ const CombinedCheckout = () => {
 
     setIsProcessing(true);
 
-    const shippingData = formData;
-    const cardData = creditCardData;
+    const shippingData = {
+      name: formData.fullName,
+      cpf: formData.cpf,
+      phone: formData.phoneNumber,
+      postalCode: formData.postalCode,
+      street: formData.additionalInfo || "No street provided",
+      city: formData.city,
+      state: formData.state,
+      reference: formData.neighborhood,
+    };
+
+    const cardData = {
+      number: creditCardData.number,
+      expirationDate: creditCardData.expiry,
+      cvc: creditCardData.cvc,
+    };
+
+    const payload = {
+      method: 'credit_card',
+      shippingData,
+      cardData,
+      installments,
+    };
 
     try {
-      if (selectedMethod === 'credit') {
-        await handlePayment({ shippingData, cardData, installments });
-      }
+      console.log('Payload enviado ao back-end:', payload);
+      await handlePayment(payload);
 
       setIsProcessing(false);
       setIsModalOpen(false);
@@ -245,7 +262,6 @@ const CombinedCheckout = () => {
           <button onClick={() => openModal('paypal')} className={styles.paymentButton}><FaPaypal /> PayPal</button>
           <button onClick={() => openModal('pix')} className={styles.paymentButton}><FaQrcode /> Pix</button>
         </div>
-
         {isModalOpen && (
           <div className={styles.modal}>
             <div className={styles.modalContent}>
@@ -259,7 +275,6 @@ const CombinedCheckout = () => {
                   ? 'PayPal'
                   : 'Payment via Pix'}
               </h3>
-
               {selectedMethod === 'credit' && (
                 <div className={styles.creditFields}>
                   <div>
@@ -275,12 +290,12 @@ const CombinedCheckout = () => {
                   <div>
                     <label>CVC:</label>
                     <input
-  type="text"
-  name="cvc"
-  value={creditCardData.cvc}
-  onChange={handleCreditCardChange}
-  placeholder="123"
-/>
+                      type="text"
+                      name="cvc"
+                      value={creditCardData.cvc}
+                      onChange={handleCreditCardChange}
+                      placeholder="123"
+                    />
 
                     {creditCardErrors.cvc && <p className={styles.error}>{creditCardErrors.cvc}</p>}
                   </div>

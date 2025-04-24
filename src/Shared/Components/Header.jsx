@@ -5,7 +5,7 @@ import styles from '../../Shared/Styles/Header.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import useCart from '../../../src/hooks/use-cart';
 import { useAuth } from '../../../src/AuthContext';
-import { getCartItemCount } from '../../modules/cart/services/CartService'; // Verifique o caminho correto
+import { getCartItemCount } from '../../modules/cart/services/CartService'; 
 
 export default function Header() {
   const navigate = useNavigate();
@@ -26,8 +26,22 @@ export default function Header() {
     };
   
     fetchCartCount();
-  }, [cart]); // Atualiza quando o estado do carrinho muda
+  }, [cart]); 
 
+  useEffect(() => {
+    const updateCartCount = () => {
+      const storedCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+      const totalItems = storedCart.items.reduce((acc, item) => acc + (item.quantity || 1), 0);
+      setCartItemCount(totalItems);
+    };
+  
+    window.addEventListener('storage', updateCartCount);
+  
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+    };
+  }, []);
+  
   
   
   

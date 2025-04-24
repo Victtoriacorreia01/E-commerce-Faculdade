@@ -17,69 +17,113 @@ const MyAccount = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const userData = localStorage.getItem('user');
-        if (userData) {
-            setUser(JSON.parse(userData));
-            setEditedUser(JSON.parse(userData));
-        } else {
-            loadUserData();
-        }
-    }, []);
-
-    useEffect(() => {
         const loadUserData = async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                navigate('/login/login');
+                return;
+            }
             try {
-                const token = localStorage.getItem('authToken');
-                if (!token) {
-                    navigate('/account/account');
-                    return;
-                }
-                const response = await getUserProfile();
-                setUser(response);
-                setEditedUser(response);  
-                setAddress(response.address || {});
+                const response = await getUserProfile(); 
+                console.log('Dados do usuário:', response);
+    
+                setUser(response); 
+                setEditedUser({
+                    telephone: response.telephone || '',
+                    email: response.email || '',
+                    birthdate: response.birthdate || '',
+                });
+    
+                setAddress({
+                    street: response?.address?.street || '',
+                    number: response?.address?.number || '',
+                    district: response?.address?.district || '',
+                    cep: response?.address?.cep || '',
+                    city: response?.address?.city || '',
+                    reference: response?.address?.reference || '',
+                });
+    
                 localStorage.setItem('user', JSON.stringify(response)); 
             } catch (error) {
-                console.error(error);
+                console.error('Erro ao carregar dados do usuário:', error);
                 navigate('/login/login');
             } finally {
-                setLoading(false);
+                setLoading(false); 
             }
         };
+    
         loadUserData();
     }, [navigate]);
+    
+    const validateUserData = () => {
+        if (!editedUser.email.includes('@')) {
+            alert('Email inválido.');
+            return false;
+        }
+        if (editedUser.telephone.length < 10) {
+            alert('Telefone inválido. Deve conter ao menos 10 dígitos.');
+            return false;
+        }
+        if (!/^\d{2}\/\d{2}\/\d{4}$/.test(editedUser.birthdate)) {
+            alert('Data de nascimento inválida. Use o formato DD/MM/AAAA.');
+            return false;
+        }
+        return true;
+    };
+    
 
     const handleChange = (setState) => (field, value) => {
-        setState((prev) => {
-            const updatedState = { ...prev, [field]: value };
-            return updatedState;
-        });
+        setState((prev) => ({ ...prev, [field]: value }));
     };
 
     const handleSavePersonalInfo = async () => {
+        if (!validateUserData()) return;
+
+
         try {
-            await updateUserProfile(editedUser);
-            setUser((prev) => ({
-                ...prev,
+            const formattedUser = {
                 ...editedUser,
-            }));
-            localStorage.setItem('user', JSON.stringify({ ...user, ...editedUser }));
+                telephone: editedUser.telephone.replace(/\D/g, ''),
+                birthdate: editedUser.birthdate.split('/').reverse().join('-'),
+            };
+
+            await updateUserProfile(formattedUser);
+            const updatedUser = { ...user, ...formattedUser };
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
             setOpenPersonalModal(false);
+            alert('Informações pessoais atualizadas com sucesso!');
         } catch (error) {
-            console.error('Error updating personal information:', error);
+            console.error('Erro ao atualizar informações pessoais:', error);
+            alert('Erro ao atualizar informações. Tente novamente.');
         }
     };
 
     const handleSaveAddress = async () => {
         try {
-            await updateUserAddress(address);
-            const updatedUser = await getUserProfile();  
-            setUser(updatedUser);
-            setAddress(updatedUser.address || {});
+
+            const formattedAddress = {
+                ...address,
+                cep: address.cep.replace(/\D/g, ''),
+            };
+    
+            console.log('Dados do endereço a serem atualizados:', formattedAddress);
+    
+            await updateUserAddress(formattedAddress);
+    
+            const updatedUser = { ...user, address: formattedAddress }; 
+            setUser(updatedUser); 
+            localStorage.setItem('user', JSON.stringify(updatedUser)); 
             setOpenAddressModal(false);
+            alert('Endereço atualizado com sucesso!');
         } catch (error) {
-            console.error('Error updating address:', error);
+            console.error('Erro ao atualizar o endereço:', error);
+            alert('Erro ao atualizar o endereço. Tente novamente.');
         }
+    };
+    
+    const formatCep = (cep) => {
+        return cep.replace(/\D/g, '').replace(/(\d{5})(\d)/, '$1-$2').slice(0, 9);
     };
 
     const handleLogout = () => {
@@ -90,17 +134,21 @@ const MyAccount = () => {
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-    
         try {
             const response = await uploadProfileImage(file);
-            console.log('Imagem enviada com sucesso:', response);
-    
-            setProfileImage(URL.createObjectURL(file)); // Atualiza a imagem localmente
+            console.log('Resposta do upload da imagem:', response);
+            console.log('URL da imagem de perfil:', response.imageUrl);
+            const updatedUser = { ...user, image: response.imageUrl };
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            setProfileImage(URL.createObjectURL(file));
+            alert('Imagem do perfil atualizada com sucesso!');
         } catch (error) {
             console.error('Erro ao enviar imagem:', error);
+            alert('Não foi possível atualizar a imagem. Tente novamente.');
         }
     };
-    
+
     return (
         <div className="account-settings">
             <aside className="sidebar">
@@ -115,29 +163,29 @@ const MyAccount = () => {
                 </ul>
             </aside>
             <main className="profile-content">
-            <section className="profile-header">
-                        <div className="profile-info">
-                            <label htmlFor="upload-button" className="profile-pic-container">
-                                {profileImage ? (
-                                    <img src={profileImage} alt="Profile" className="profile-pic" />
-                                ) : (
-                                    <FaUserCircle className="profile-pic cursor-pointer" size={100} />
-                                )}
-                            </label>
-                            <input
-                                id="upload-button"
-                                type="file"
-                                accept="image/*"
-                                style={{ display: 'none' }}
-                                onChange={handleImageUpload}
-                            />
-                            <div>
-                                <h2>{user?.name}</h2>
-                                <p>{user?.jobTitle}</p>
-                                <p>{user?.location}</p>
-                            </div>
+                <section className="profile-header">
+                    <div className="profile-info">
+                        <label htmlFor="upload-button" className="profile-pic-container">
+                            {profileImage ? (
+                                <img src={profileImage} alt="Profile" className="profile-pic" />
+                            ) : (
+                                <FaUserCircle className="profile-pic cursor-pointer" size={100} />
+                            )}
+                        </label>
+                        <input
+                            id="upload-button"
+                            type="file"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={handleImageUpload}
+                        />
+                        <div>
+                            <h2>{user?.name}</h2>
+                            <p>{user?.jobTitle}</p>
+                            <p>{user?.location}</p>
                         </div>
-                    </section>
+                    </div>
+                </section>
                 <div className="section-header">
                     <h3 className="h3">Personal Information</h3>
                     <button className="edit-button" onClick={() => setOpenPersonalModal(true)}>Edit</button>
@@ -147,7 +195,6 @@ const MyAccount = () => {
                     <div><strong>Phone:</strong> {user?.telephone}</div>
                     <div><strong>Birthdate:</strong> {user?.birthdate}</div>
                 </div>
-
                 <div className="section-header">
                     <h3 className="h3">My Address</h3>
                     <button className="edit-button" onClick={() => setOpenAddressModal(true)}>Edit</button>
@@ -156,11 +203,10 @@ const MyAccount = () => {
                     <div><strong>Street:</strong> {address.street}</div>
                     <div><strong>Number:</strong> {address.number}</div>
                     <div><strong>District:</strong> {address.district}</div>
-                    <div><strong>ZIP Code:</strong> {address.cep}</div>
+                    <div><strong>ZIP Code:</strong> {formatCep(address.cep || '')}</div>
                     <div><strong>City/State:</strong> {address.city}</div>
                     <div><strong>Reference:</strong> {address.reference}</div>
                 </div>
-
                 <Modal open={openPersonalModal} onClose={() => setOpenPersonalModal(false)}>
                     <Box className="modal-box">
                         <h2 className="edit">Edit Personal Information</h2>
@@ -187,7 +233,6 @@ const MyAccount = () => {
                         </Button>
                     </Box>
                 </Modal>
-
                 <Modal open={openAddressModal} onClose={() => setOpenAddressModal(false)}>
                     <Box className="modal-box">
                         <h2 className="edit">Edit Address</h2>
@@ -214,7 +259,7 @@ const MyAccount = () => {
                         />
                         <TextField
                             label="ZIP Code"
-                            value={address.cep || ''}
+                            value={formatCep(address.cep || '')}
                             onChange={(e) => handleChange(setAddress)('cep', e.target.value)}
                             fullWidth
                             margin="normal"

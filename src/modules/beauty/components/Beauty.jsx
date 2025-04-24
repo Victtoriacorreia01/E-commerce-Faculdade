@@ -33,12 +33,21 @@ const Beauty = () => {
   const handleAddToCart = async (product) => {
     try {
       await addToCart(product.id); 
-      await updateCartCount(); 
+  
+      // Atualizar o localStorage após adicionar ao carrinho
+      const cartData = await getCart();
+      localStorage.setItem('cart', JSON.stringify(cartData));
+  
+      // Atualizar a contagem localmente (opcional, para evitar atrasos)
+      const totalItems = cartData.items.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(totalItems);
+  
       navigate('/cart/cart'); 
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
   };
+  
 
   const toggleFavorite = async (product) => {
     try {
