@@ -15,6 +15,7 @@ export default function Header() {
   const [cartItemsCount, setCartItemsCount] = useState(cart.length);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [cartItemCount, setCartItemCount] = useState(0);
+  
   useEffect(() => {
     const fetchCartCount = async () => {
       try {

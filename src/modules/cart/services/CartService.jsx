@@ -3,6 +3,8 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8080'; 
 const CART_URL = `${BASE_URL}/cart`;
+const TOKEN = localStorage.getItem('authToken');
+const CART_ITEMS_COUNT = 0;
 
 
 export const createOrder = async () => {
@@ -35,6 +37,8 @@ export const addToCart = async (productId) => {
 
     if (response.status === 200) {
       console.log("Item adicionado ao carrinho:", response.data.message);
+
+      getCartItemCount();
     }
 
     return response.data;
@@ -64,10 +68,16 @@ export const getCart = async () => {
 
 export const getCartItemCount = async () => {
   try {
-    const cart = await getCart();
-    const itemCount = cart.items.reduce((total, item) => total + item.quantity, 0);
-    console.log('Quantidade total de itens no carrinho:', itemCount);
-    return itemCount;
+    const CART_ITEMS_COUNT = await axios.get(`${CART_URL}/items`, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Quantidade total de itens no carrinho:', CART_ITEMS_COUNT);
+    
+    return itemCountCART_ITEMS_COUNT;
   } catch (error) {
     console.error('Erro ao obter a contagem de itens no carrinho:', error);
     throw error;
@@ -85,6 +95,9 @@ export const removeFromCart = async (productId) => {
     });
 
     console.log('Produto removido do carrinho:', response.data);
+
+    getCartItemCount();
+
     return response.data;
   } catch (error) {
     console.error('Erro ao remover produto do carrinho:', error);
@@ -104,6 +117,7 @@ export const incrementQuantity = async (productId) => {
     });
 
     console.log('Quantidade aumentada no carrinho:', response.data);
+
     return response.data;
   } catch (error) {
     console.error('Erro ao aumentar quantidade:', error);
@@ -139,6 +153,9 @@ export const clearCart = async () => {
     });
 
     console.log('Carrinho esvaziado:', response.data);
+
+    getCartItemCount();
+
     return response.data;
   } catch (error) {
     console.error('Erro ao esvaziar o carrinho:', error);
